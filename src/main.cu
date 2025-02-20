@@ -2,19 +2,27 @@
 #include <cstdint>
 #include <ppm3.hpp>
 #include <Matrix1D.hpp>
-#include <cmath>
+#include <common.hpp>
 
 #include <cuda_runtime.h>
 #include <thrust/complex.h>
 
 inline constexpr uint16_t cols = 1920, rows = 1080;
+//inline constexpr uint16_t cols = 4096, rows = 3112;
+static_assert(
+        ((rows-1) * cols) <= 0xff'ff'ff,
+        "ATfast(cols, r_idx, c_idx) -> __umul24(r_idx, cols) doesnt support more than 24 bit"
+);
+
 
 // https://stackoverflow.com/questions/16119923/using-constants-with-cuda
 __device__ inline constexpr uint16_t ixsize = rows, gpu_rows = rows, iysize = cols, gpu_cols = cols, max_i = 1000;
 __device__ inline constexpr float cxmin = -2.5f, cxmax = 2.5f, cymin = -2.5f, cymax = 2.5f;
 
+#if 0
 #include <cuda_fp16.h>
-__device__ thrust::complex<float> fast_mul(thrust::complex<float> a, thrust::complex<float> b) {
+
+__device__ inline thrust::complex<float> fast_mul(thrust::complex<float> a, thrust::complex<float> b) {
 
     // c.real() = a.real() * b.real() - a.imag() * b.imag()
     // c.imag() = a.real() * b.imag() + a.imag() * b.real()
@@ -32,7 +40,7 @@ __device__ thrust::complex<float> fast_mul(thrust::complex<float> a, thrust::com
     return {c_real, c_imag};
 }
 
-__device__ thrust::complex<float> ffast_mul(thrust::complex<float> a, thrust::complex<float> b) {
+__device__ inline thrust::complex<float> ffast_mul(thrust::complex<float> a, thrust::complex<float> b) {
 
     // c.real() = a.real() * b.real() - a.imag() * b.imag()
     // c.imag() = a.real() * b.imag() + a.imag() * b.real()
@@ -61,21 +69,22 @@ __device__ thrust::complex<float> ffast_mul(thrust::complex<float> a, thrust::co
 
     return {__low2float(c_vec), __high2float(c_vec)};
 }
+#endif
 
 __device__ rgb_t calc_mandelbrot(uint16_t ix, uint16_t iy) {
 
-    using thrust::complex;
+    using thrust::complex, thrust::abs, thrust::cos;
 
     complex<float> c{
-            cxmin + ix / (ixsize-1.0) * (cxmax - cxmin),
-            cymin + iy / (iysize-1.0) * (cymax - cymin)
+            cxmin + ix / (ixsize-1.0f) * (cxmax - cxmin),
+            cymin + iy / (iysize-1.0f) * (cymax - cymin)
     }, z = 0;
 
-    uint32_t i;
-    for (i = 0; i < max_i && abs(z) < 4.0; ++i)
-        z = cos(z * c * c * c); // z = cos(z * pow(c, 3));
-        //z = cos( fast_mul(fast_mul(fast_mul(z, c), c), c) );
-        //z = cos( ffast_mul(ffast_mul(ffast_mul(z, c), c), c) );
+    c *= c * c; // c = pow(c, 3);
+
+    uint16_t i;
+    for (i = 0; i < max_i && abs(z) < 4.0f; ++i)
+        z = cos(z * c); // z = cos(z * pow(c, 3));
 
     // GPU handle float truncation differently from CPU, making round-toward-zero instead of round-to-nearest.
     // that took me a lot debugging to figure why the image generated was so different than another generated
@@ -96,9 +105,10 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
 
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
         for (uint16_t c = tc; c < gpu_cols; c += blockDim.x * gridDim.x) {
-            const uint32_t index = AT(gpu_cols, tr, c);
-            assert(index < len);
+            const uint32_t index = ATfast(gpu_cols, tr, c);
+            //assert(index < len);
             v[index] = calc_mandelbrot(tr, c);
+            //v[ __umul24(tr, gpu_cols) + c ] = calc_mandelbrot(tr, c);
         }
     }
 
