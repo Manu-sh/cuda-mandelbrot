@@ -32,17 +32,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${INC_PATH})
 #set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --compiler-options '-Wall -Wextra -Wno-unused-function -pipe -pedantic -fstack-protector-all -fstack-protector-strong -O3 -ffast-math -funroll-loops -march=native -mtune=native -funswitch-loops -ftree-vectorize -fivopts -fmodulo-sched -msse -msse2 -msse3 -mmmx -m3dnow -mavx2'")
 
 target_compile_options(${PROJECT_NAME} PRIVATE
-        -g
+        #-g
         #-D_DEBUG -G # abilita il dbg su cpu e gpu
         -Xptxas
         -O3
         --expt-relaxed-constexpr
-        --compiler-options
-
-        -ffast-math
-        -funroll-loops
-        -pipe
-        -Wall -Wextra -Wno-unused-function -pipe -pedantic -fstack-protector-all -fstack-protector-strong
+        -pedantic
+        -Wall -Wextra -Wno-unused-function -pipe
+        -fstack-protector-all -fstack-protector-strong
         -O3 -ffast-math -funroll-loops -march=native -mtune=native
         -funswitch-loops -ftree-vectorize -fivopts -fmodulo-sched
         -msse -msse2 -msse3 -mmmx -m3dnow -mavx2

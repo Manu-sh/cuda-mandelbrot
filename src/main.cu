@@ -13,6 +13,55 @@ inline constexpr uint16_t cols = 1920, rows = 1080;
 __device__ inline constexpr uint16_t ixsize = rows, gpu_rows = rows, iysize = cols, gpu_cols = cols, max_i = 1000;
 __device__ inline constexpr float cxmin = -2.5f, cxmax = 2.5f, cymin = -2.5f, cymax = 2.5f;
 
+#include <cuda_fp16.h>
+__device__ thrust::complex<float> fast_mul(thrust::complex<float> a, thrust::complex<float> b) {
+
+    // c.real() = a.real() * b.real() - a.imag() * b.imag()
+    // c.imag() = a.real() * b.imag() + a.imag() * b.real()
+
+    using fp16 = __half;
+    fp16 a_real = (fp16)a.real(), a_imag = (fp16)a.imag();
+    fp16 b_real = (fp16)b.real(), b_imag = (fp16)b.imag();
+
+    //fp16 c_real = a_real * b_real - a_imag * b_imag;
+    //fp16 c_imag = a_real * b_imag + a_imag * b_real;
+
+    fp16 c_real = __hmul(a_real, b_real) - __hmul(a_imag, b_imag);
+    fp16 c_imag = __hmul(a_real, b_imag) + __hmul(a_imag, b_real);
+
+    return {c_real, c_imag};
+}
+
+__device__ thrust::complex<float> ffast_mul(thrust::complex<float> a, thrust::complex<float> b) {
+
+    // c.real() = a.real() * b.real() - a.imag() * b.imag()
+    // c.imag() = a.real() * b.imag() + a.imag() * b.real()
+
+    using fp16 = __half;
+    using fp16_vector = __half2;
+
+    fp16_vector a_vec = __halves2half2((fp16)a.real(), (fp16)a.imag()); // a[] = {a.real(), a.imag() }
+    fp16_vector b_vec = __halves2half2((fp16)b.real(), (fp16)b.imag()); // b[] = {b.real(), b.imag() }
+
+    // c[] = {a[0] * b[0], a[1] * b[1]}; -> a.real() * b_real(), a.imag() * b.imag()
+    // c[] = {a.real() * b_real(), a.imag() * b.imag()};
+    fp16_vector c_real_tmp = __hmul2(a_vec, b_vec); // computa le prime 2 moltiplicazioni necessarie a calcolare la parte real di c senza fare sottrazione
+
+    // d[] = { a[0] * b[1], a[1] * b[0] }
+     // fp16_vector c_imag_tmp = __hmul2(a_vec, __halves2half2(__high2half(b_vec), __low2half(b_vec)));
+    fp16_vector c_imag_tmp = __halves2half2(
+             __low2half(a_vec) * __high2half(b_vec), // d[0] = a[0] * b[1] -> a.real() * b.imag()
+            __high2half(a_vec) *  __low2half(b_vec)  // d[1] = a[1] * b[0] -> a.imag() * b.real()
+    );
+
+    fp16_vector c_vec = __halves2half2(
+            __low2half(c_real_tmp) - __high2half(c_real_tmp), // real part
+            __low2half(c_imag_tmp) + __high2half(c_imag_tmp)  // imag part
+    );
+
+    return {__low2float(c_vec), __high2float(c_vec)};
+}
+
 __device__ rgb_t calc_mandelbrot(uint16_t ix, uint16_t iy) {
 
     using thrust::complex;
@@ -24,8 +73,9 @@ __device__ rgb_t calc_mandelbrot(uint16_t ix, uint16_t iy) {
 
     uint32_t i;
     for (i = 0; i < max_i && abs(z) < 4.0; ++i)
-        z = cos(z*c*c*c); // z = cos(z * pow(c, 3));
-
+        z = cos(z * c * c * c); // z = cos(z * pow(c, 3));
+        //z = cos( fast_mul(fast_mul(fast_mul(z, c), c), c) );
+        //z = cos( ffast_mul(ffast_mul(ffast_mul(z, c), c), c) );
 
     // GPU handle float truncation differently from CPU, making round-toward-zero instead of round-to-nearest.
     // that took me a lot debugging to figure why the image generated was so different than another generated
@@ -72,7 +122,7 @@ int main() {
     );
 
     kernel<<<blocksDim, threadsPerBlock>>>(gpu_vct, cols * rows);
-    cudaDeviceSynchronize(); // wait
+    cudaDeviceSynchronize(); // wait for gpu
 
     PPM3 img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(PPM3::pixel_type) * img.width() * img.height(), cudaMemcpyDeviceToHost);
