@@ -75,7 +75,7 @@ int main() {
 
     dim3 threadsPerBlock((int)sqrt(maxThreadsPerBlock), (int)sqrt(maxThreadsPerBlock));
     dim3 blocksDim(
-            (cols + threadsPerBlock.x - 1) / threadsPerBlock.x, // forza l'allineamento a un multiplo di threadsPerBlock
+            (cols + threadsPerBlock.x - 1) / threadsPerBlock.x, // force the ""alignment"" to a multiple of threadsPerBlock
             (rows + threadsPerBlock.y - 1) / threadsPerBlock.y
     );
 
