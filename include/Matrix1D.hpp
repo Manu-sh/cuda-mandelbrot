@@ -111,6 +111,9 @@ Matrix1D<T, ALIGNMENT>::Matrix1D(uint16_t height, uint16_t width)
     m_vct = (decltype(m_vct)) aligned_alloc(ALIGNMENT, aligned_bsize);
     new (m_vct) T[m_length]; // initialize the memory block calling in-place new[]
 
+    // passing a size in bytes which is not a multiple of ALIGNMENT result in UB
+    // for example aligned_alloc(32, 65) and aligned_alloc(32, 63) are UB
+    // while aligned_alloc(32, 64) is correct
     if (((long)m_vct) % ALIGNMENT != 0 || aligned_bsize % ALIGNMENT != 0)
         throw std::runtime_error("incorrectly aligned memory");
 }
