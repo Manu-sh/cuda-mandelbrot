@@ -87,5 +87,6 @@ int main() {
 
     cudaFree(gpu_vct);
     cudaDeviceReset();
+
     return 0;
 }
