@@ -25,3 +25,5 @@ x(1,2) = {0,   0,   0};
 
 x.write_file_content("color.ppm");
 ```
+
+###### Copyright © 2025, [Manu-sh](https://github.com/Manu-sh), s3gmentationfault@gmail.com. Released under the [MIT license](LICENSE).
