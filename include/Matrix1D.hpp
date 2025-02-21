@@ -21,13 +21,13 @@
                 cout << "called for pointer " << p << '\n';
             }
             void *p = nullptr;
-            char buf[12];
+            char buf[11];
         };
 
-        //cout << sizeof(big_t) << endl;
-        Matrix1D<big_t> mtx{3, 2};
-        Matrix1D<char, 3> mtx2{3, 3}; // should raise an error
-        Matrix1D<char> mtx2{3, 3};
+        cout << sizeof(big_t) << endl;
+        Matrix1D<big_t, 4> mtx{3, 2};
+        //Matrix1D<char, 3> mtx2{3, 3}; // should raise an error at compilation time
+        Matrix1D<char, 1> mtx2{3, 3};
         return 0;
     }
 #endif
@@ -98,12 +98,12 @@ Matrix1D<T, ALIGNMENT>::Matrix1D(uint16_t height, uint16_t width)
 
     const auto bsize = sizeof(T) * m_length;
     const auto aligned_bsize = ((bsize + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
-    // printf("allocating block of %zu aligned to %zu\n", aligned_bsize, ALIGNMENT);
+    //printf("allocating block of %zu aligned to %zu\n", aligned_bsize, ALIGNMENT);
 
     m_vct = (decltype(m_vct)) aligned_alloc(ALIGNMENT, aligned_bsize);
     new (m_vct) T[m_length]; // initialize the memory block calling in-place new[]
 
-    if (((long)m_vct) % ALIGNMENT != 0)
+    if (((long)m_vct) % ALIGNMENT != 0 || aligned_bsize % ALIGNMENT != 0)
         throw std::runtime_error("incorrectly aligned memory");
 }
 
