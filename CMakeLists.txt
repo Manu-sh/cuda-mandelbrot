@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
 project(cuda CXX CUDA)
 
+# cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
+# analyze-build --cdb compile_commands.json --use-analyzer `which clang`
+# or scanbuild make -j24
+#set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
