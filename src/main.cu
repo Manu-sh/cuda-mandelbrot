@@ -11,7 +11,7 @@ inline constexpr uint16_t cols = 1920, rows = 1080;
 //inline constexpr uint16_t cols = 4096, rows = 3112;
 static_assert(
         ((rows-1) * cols) <= 0xff'ff'ff,
-        "ATfast(cols, r_idx, c_idx) -> __umul24(r_idx, cols) doesnt support more than 24 bit"
+        "ATfast(cols, r_idx, c_idx) -> __umul24(r_idx, cols) does not support more than 24 bit"
 );
 
 
