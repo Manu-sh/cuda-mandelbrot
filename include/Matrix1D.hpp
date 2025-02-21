@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <stdexcept>
+#include <type_traits>
 #include <new>
 
 #if 0
@@ -25,6 +26,9 @@
 
         //cout << sizeof(big_t) << endl;
         Matrix1D<big_t> mtx{3, 2};
+        Matrix1D<char, 3> mtx2{3, 3}; // should raise an error
+        Matrix1D<char> mtx2{3, 3};
+        return 0;
     }
 #endif
 
@@ -42,10 +46,12 @@ class Matrix1D {
     public:
         explicit Matrix1D(uint16_t height, uint16_t width);
         ~Matrix1D() {
-            //delete[] m_vct;
             if (!m_vct) return;
-            for (uint32_t i = 0; i < m_length; ++i)
-                m_vct[i].~T();
+
+            if constexpr(std::is_destructible<T>::value) {
+                for (uint_fast32_t i = 0; i < m_length; ++i)
+                    m_vct[i].~T();
+            }
 
             free(m_vct);
         }
@@ -84,9 +90,15 @@ template <typename T, const size_t ALIGNMENT>
 Matrix1D<T, ALIGNMENT>::Matrix1D(uint16_t height, uint16_t width)
         : m_width{width}, m_height{height}, m_length{(uint32_t)width*height} {
 
+    constexpr auto is_power_of_2 = [] (decltype(ALIGNMENT) a) -> bool {
+        return a > 0 && !(a & (a - 1));
+    };
+
+    static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)");
+
     const auto bsize = sizeof(T) * m_length;
     const auto aligned_bsize = ((bsize + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
-    //printf("allocating block of %zu aligned to %zu\n", aligned_bsize, alignment);
+    // printf("allocating block of %zu aligned to %zu\n", aligned_bsize, ALIGNMENT);
 
     m_vct = (decltype(m_vct)) aligned_alloc(ALIGNMENT, aligned_bsize);
     new (m_vct) T[m_length]; // initialize the memory block calling in-place new[]
