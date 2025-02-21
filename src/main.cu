@@ -62,6 +62,7 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
 
 }
 
+
 int main() {
 
     cudaSetDevice(0);
@@ -71,7 +72,6 @@ int main() {
 
     int maxThreadsPerBlock;
     cudaDeviceGetAttribute(&maxThreadsPerBlock, cudaDevAttrMaxThreadsPerBlock, 0);
-    cudaMemset(gpu_vct, 0, sizeof(rgb_t) * cols * rows);
 
     dim3 threadsPerBlock((int)sqrt(maxThreadsPerBlock), (int)sqrt(maxThreadsPerBlock));
     dim3 blocksDim(

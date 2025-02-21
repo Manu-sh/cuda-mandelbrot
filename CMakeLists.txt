@@ -37,7 +37,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         -Xptxas
         -O3
         --expt-relaxed-constexpr
-        -pedantic
+        #-pedantic
         -Wall -Wextra -Wno-unused-function -pipe
         -fstack-protector-all -fstack-protector-strong
         -O3 -ffast-math -funroll-loops -march=native -mtune=native
