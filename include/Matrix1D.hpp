@@ -99,10 +99,13 @@ Matrix1D<T, ALIGNMENT>::Matrix1D(uint16_t height, uint16_t width)
         return a > 0 && !(a & (a - 1));
     };
 
+    constexpr auto aligned_bsize_calc = [] (size_t bsize) -> size_t {
+        return ((bsize + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
+    };
+
     static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)");
 
-    const auto bsize = sizeof(T) * m_length;
-    const auto aligned_bsize = ((bsize + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
+    const auto aligned_bsize = aligned_bsize_calc(sizeof(T) * m_length);
     //printf("allocating block of %zu aligned to %zu\n", aligned_bsize, ALIGNMENT);
 
     m_vct = (decltype(m_vct)) aligned_alloc(ALIGNMENT, aligned_bsize);
