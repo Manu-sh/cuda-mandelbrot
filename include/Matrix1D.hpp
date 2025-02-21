@@ -48,6 +48,11 @@ class Matrix1D {
         ~Matrix1D() {
             if (!m_vct) return;
 
+            // ::operator delete[] (nullptr, m_vct);
+            // -> according to stroustrup (Programming: Principles and Practice Using C++)
+            // this operator definition to nothing (unless overloads) except inform the garbage collector,
+            // so just call manually every destructor
+
             if constexpr(std::is_destructible<T>::value) {
                 for (uint_fast32_t i = 0; i < m_length; ++i)
                     m_vct[i].~T();
