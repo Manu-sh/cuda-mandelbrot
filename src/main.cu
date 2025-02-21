@@ -62,7 +62,6 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
 
 }
 
-
 int main() {
 
     cudaSetDevice(0);
