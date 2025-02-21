@@ -1,6 +1,8 @@
-### Cuda Mandelbrot
-The code is written for my 4070s so there is no warranty will work on others gpus
-it probably will work on every rtx 4000, i will take a look 4 portability more later
+### Cuda Mandelbrot 🔀
+###### how to use cuda acceleration to compute mandelbrot set
+
+The code is written for my ___rtx 4070s___ so there is no guarantee it will work on others gpus
+but it probably will work on every rtx 4000, i will take a closer look at portability in the future
 
 https://en.wikipedia.org/wiki/Netpbm
 
