@@ -1,3 +1,7 @@
+### Cuda Mandelbrot
+The code is written for my 4070s so there is no warranty will work on others gpus
+it probably will work on every rtx 4000, i will take a look 4 portability more later
+
 https://en.wikipedia.org/wiki/Netpbm
 
 https://developer.nvidia.com/blog/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
