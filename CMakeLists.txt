@@ -47,12 +47,12 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         #-g
         #-D_DEBUG -G # abilita il dbg su cpu e gpu
         -Xptxas
-        -O0
+        -O3
         --expt-relaxed-constexpr
         -pedantic
         -Wall -Wextra -Wno-unused-function -pipe
         -fstack-protector-all -fstack-protector-strong
-        -O0 -ffast-math -funroll-loops -march=native -mtune=native
+        -O3 -ffast-math -funroll-loops -march=native -mtune=native
         -funswitch-loops -ftree-vectorize -fivopts -fmodulo-sched
         # -msse -msse2 -msse3 -msse4.1 -msse4.2 -mmmx -m3dnow -mavx2 -mavx512f
         # -mfma -mbmi -mxsave -mxsaveopt -mrdrnd
