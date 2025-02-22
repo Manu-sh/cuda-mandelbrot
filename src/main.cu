@@ -1,3 +1,4 @@
+#if 0
 #include <cassert>
 #include <cstdint>
 #include <ppm3.hpp>
@@ -59,7 +60,30 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
     }
 
 }
+#endif
 
+#include <memalign.hpp>
+struct __attribute__((__packed__)) big_t {
+    big_t() {
+        p = malloc(113);
+        cout << "constructor called, malloc pointer " << p << '\n';
+    }
+    ~big_t() {
+        free(p);
+        cout << "destructor called, free pointer " << p << '\n';
+    }
+    void *p{};
+    char buf[11];
+};
+
+int main() {
+
+    // new (alignas(8) T; -> cpp17+
+
+}
+
+
+#if 0
 int main() {
 
     cudaSetDevice(0);
@@ -88,3 +112,4 @@ int main() {
 
     return 0;
 }
+#endif

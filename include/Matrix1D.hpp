@@ -14,11 +14,11 @@
         struct __attribute__((__packed__)) big_t {
             big_t() {
                 p = malloc(113);
-                cout << "constructor called, pointer " << p << '\n';
+                cout << "constructor called, malloc pointer " << p << '\n';
             }
             ~big_t() {
                 free(p);
-                cout << "called for pointer " << p << '\n';
+                cout << "destructor called, free pointer " << p << '\n';
             }
             void *p = nullptr;
             char buf[11];
