@@ -16,6 +16,8 @@ https://www.youtube.com/playlist?list=PLC6u37oFvF40BAm7gwVP7uDdzmW83yHPe
 
 https://cuda-tutorial.readthedocs.io/en/latest/
 
+https://tschmidt23.github.io/cse599i/CSE%20599%20I%20Accelerated%20Computing%20-%20Programming%20GPUs%20Lecture%2017.pdf
+
 ```cpp
 PPM3 x{3, 2};
 

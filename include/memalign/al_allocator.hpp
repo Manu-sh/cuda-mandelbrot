@@ -7,23 +7,22 @@
 
 #include <iostream>
 
-extern "C" {
-#include <malloc.h>
-}
-
 using std::cout, std::endl;
 
 template <typename T, const size_t ALIGNMENT>
+
 struct al_allocator: std::allocator<T> {
 
     static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)");
 
     // ((desired_bsize + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT
-    constexpr static size_t alignment = ALIGNMENT;
+   // constexpr static size_t alignment = ALIGNMENT;
     using aligned_type = T;
 
-    [[nodiscard]] T * allocate(size_t n) {
+#if 0
+    inline constexpr T * allocate(size_t n) {
 
+        return std::allocator<T>::allocate(n);
         const auto aligned_bsize = (((n * sizeof(T)) + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
 
 #if 0
@@ -41,6 +40,7 @@ struct al_allocator: std::allocator<T> {
     inline void deallocate(T *p, [[maybe_unused]] size_t n) {
         free(p);
     }
+#endif
 
 
     template <typename U>
