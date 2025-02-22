@@ -14,6 +14,7 @@
 
 struct PPM3: public Matrix1D<rgb_t> {
 
+    constexpr static auto pixel_type_alignment = PPM3::Matrix1D<rgb_t>::matrix_type_alignment;
     using pixel_type = typename PPM3::Matrix1D<rgb_t>::matrix_type;
 
     PPM3(const PPM3 &o) = delete;
@@ -47,6 +48,8 @@ struct PPM3: public Matrix1D<rgb_t> {
             "224 ", "225 ", "226 ", "227 ",  "228 ", "229 ", "230 ", "231 ", "232 ", "233 ", "234 ", "235 ", "236 ", "237 ", "238 ", "239 ",
             "240 ", "241 ", "242 ", "243 ",  "244 ", "245 ", "246 ", "247 ", "248 ", "249 ", "250 ", "251 ", "252 ", "253 ", "254 ", "255 "
         };
+
+        static_assert((sizeof map) % PPM3::pixel_type_alignment == 0, "invalid alignment for map[]");
 
 #if 1
         std::ostringstream ss;

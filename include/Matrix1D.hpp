@@ -37,6 +37,7 @@ template <typename T, const size_t ALIGNMENT = 32>
 class Matrix1D {
 
     public:
+        constexpr static size_t matrix_type_alignment = ALIGNMENT;
         using matrix_type = T;
 
     private:
@@ -44,6 +45,7 @@ class Matrix1D {
         Matrix1D & operator=(const Matrix1D &o) = delete;
 
     public:
+
         explicit Matrix1D(uint16_t height, uint16_t width);
         ~Matrix1D() {
             if (!m_vct) return;
