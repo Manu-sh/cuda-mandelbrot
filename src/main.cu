@@ -76,9 +76,8 @@ struct __attribute__((__packed__)) big_t {
     char buf[11];
 };
 
-int main() {
 
-    // new (alignas(8) T; -> cpp17+
+int main() {
 
 }
 
