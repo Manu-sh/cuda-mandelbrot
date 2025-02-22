@@ -51,13 +51,11 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
           uint16_t tr = blockIdx.y * blockDim.y + threadIdx.y;
     const uint16_t tc = blockIdx.x * blockDim.x + threadIdx.x;
 
+    #pragma unroll
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
-        for (uint16_t c = tc; c < gpu_cols; c += blockDim.x * gridDim.x) {
-            const uint32_t index = ATfast(gpu_cols, tr, c);
-            //assert(index < len);
-            v[index] = calc_mandelbrot(tr, c);
-            //v[ __umul24(tr, gpu_cols) + c ] = calc_mandelbrot(tr, c);
-        }
+        #pragma unroll
+        for (uint16_t c = tc; c < gpu_cols; c += blockDim.x * gridDim.x)
+            v[AT(gpu_cols, tr, c)] = calc_mandelbrot(tr, c);
     }
 
 }
