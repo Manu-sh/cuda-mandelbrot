@@ -33,7 +33,7 @@
 #endif
 
 // memory aligned to 256 bit (32 byte) to use avx2
-template <typename T, const size_t ALIGNMENT = 32>
+template <typename T, const size_t ALIGNMENT = sizeof(T)>
 class Matrix1D {
 
     public:
