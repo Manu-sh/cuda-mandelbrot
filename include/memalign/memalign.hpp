@@ -11,6 +11,17 @@
 #include <iostream>
 using std::cout, std::endl;
 
+
+/*
+    for (auto alignment : {1, 2, 4, 8, 16, 32}) {
+        big_t *p = new(std::align_val_t(alignment)) big_t;
+        cout << ((((long) p) % alignment == 0) ? "OK" : "internal error: incorrectly aligned memory") << endl;
+        cout << p->p << endl;
+        delete p;
+    }
+
+ */
+
 /* examples
     #include <memalign.hpp>
     struct __attribute__((__packed__)) big_t {
