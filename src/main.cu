@@ -1,12 +1,11 @@
-#if 0
 #include <cassert>
 #include <cstdint>
 #include <ppm3.hpp>
-#include <Matrix1D.hpp>
 #include <common.hpp>
 
 #include <cuda_runtime.h>
 #include <thrust/complex.h>
+#include <memalign/al_allocator.hpp>
 
 inline constexpr uint16_t cols = 1920, rows = 1080;
 //inline constexpr uint16_t cols = 4096, rows = 3112;
@@ -60,29 +59,8 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
     }
 
 }
-#endif
 
-#include <memalign.hpp>
-struct __attribute__((__packed__)) big_t {
-    big_t() {
-        p = malloc(113);
-        cout << "constructor called, malloc pointer " << p << '\n';
-    }
-    ~big_t() {
-        free(p);
-        cout << "destructor called, free pointer " << p << '\n';
-    }
-    void *p{};
-    char buf[11];
-};
-
-
-int main() {
-
-}
-
-
-#if 0
+#if 1
 int main() {
 
     cudaSetDevice(0);
@@ -108,6 +86,38 @@ int main() {
 
     cudaFree(gpu_vct);
     cudaDeviceReset();
+
+    return 0;
+}
+#else
+#include <iostream>
+
+using std::cout, std::endl;
+int main() {
+
+    struct __attribute__((__packed__)) big_t {
+        big_t() {
+            p = malloc(113);
+            cout << "constructor called, malloc pointer " << p << '\n';
+        }
+        ~big_t() {
+            free(p);
+            cout << "destructor called, free pointer " << p << '\n';
+        }
+        void *p = nullptr;
+        char buf[11];
+    };
+
+    /*
+    cout << sizeof(big_t) << endl;
+    Matrix1D<big_t, 4> mtx{3, 2};
+    //Matrix1D<char, 3> mtx2{3, 3}; // should raise an error at compilation time
+    Matrix1D<char, 1> mtx2{3, 3};
+     */
+
+    ///std::basic_string<char, std::char_traits<char>, ::al_allocator<char, 32> > s;
+    for (int i = 0; i < 100; ++i)
+        s += std::string("ciao mondo");
 
     return 0;
 }

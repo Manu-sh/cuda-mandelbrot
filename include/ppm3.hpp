@@ -9,6 +9,7 @@
 
 #include <common.hpp>
 #include <Matrix1D.hpp>
+#include <memalign/al_allocator.hpp>
 
 // https://en.wikipedia.org/wiki/Netpbm
 
@@ -60,6 +61,7 @@ struct PPM3: public Matrix1D<rgb_t> {
            << "255\n";                                                           // end of header
 
         std::string s{ss.str()};
+        //std::basic_string<char, std::char_traits<char>, ::al_allocator<char, 32> > s{ss.str()};
         s.reserve(s.length() + (m_length * strlen("255 ")) + 50);
 
         for (uint16_t r = 0; r < m_height; ++r) {
