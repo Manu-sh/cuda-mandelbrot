@@ -31,8 +31,12 @@ set(SRC_PATH  ${PROJECT_SOURCE_DIR}/src)
 
 add_executable(${PROJECT_NAME} ${SRC_PATH}/main.cu)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${INC_PATH})
+target_include_directories(${PROJECT_NAME} PUBLIC
+        ${INC_PATH}
+        ${INC_PATH}/memalign
+)
 
+#message(STATUS "INC_PATH: ${INC_PATH}")
 # CC flags
 #set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --compiler-options '-Wall -Wextra -Wno-unused-function -pipe -pedantic -fstack-protector-all -fstack-protector-strong -O3 -ffast-math -funroll-loops -march=native -mtune=native -funswitch-loops -ftree-vectorize -fivopts -fmodulo-sched -msse -msse2 -msse3 -mmmx -m3dnow -mavx2'")
 
@@ -43,12 +47,12 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         #-g
         #-D_DEBUG -G # abilita il dbg su cpu e gpu
         -Xptxas
-        -O3
+        -O0
         --expt-relaxed-constexpr
-        #-pedantic
+        -pedantic
         -Wall -Wextra -Wno-unused-function -pipe
         -fstack-protector-all -fstack-protector-strong
-        -O3 -ffast-math -funroll-loops -march=native -mtune=native
+        -O0 -ffast-math -funroll-loops -march=native -mtune=native
         -funswitch-loops -ftree-vectorize -fivopts -fmodulo-sched
         # -msse -msse2 -msse3 -msse4.1 -msse4.2 -mmmx -m3dnow -mavx2 -mavx512f
         # -mfma -mbmi -mxsave -mxsaveopt -mrdrnd
