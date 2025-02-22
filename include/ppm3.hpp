@@ -60,8 +60,10 @@ struct PPM3: public Matrix1D<rgb_t> {
            << std::to_string(m_width) << ' ' << std::to_string(m_height) << '\n' // width x height
            << "255\n";                                                           // end of header
 
-        std::string s{ss.str()};
-        //std::basic_string<char, std::char_traits<char>, ::al_allocator<char, 32> > s{ss.str()};
+        //std::string s{ss.str()};
+        //std::basic_string<char, std::char_traits<char>, std::allocator<char> > s{ss.str()};
+        //std::basic_string<char, std::char_traits<char>, ::al_allocator<char, 8> > s{ss.str()};
+        std::basic_string<char, std::char_traits<char>, ::al_allocator<char, 4*sizeof(void *)> > s{ss.str()};
         s.reserve(s.length() + (m_length * strlen("255 ")) + 50);
 
         for (uint16_t r = 0; r < m_height; ++r) {
