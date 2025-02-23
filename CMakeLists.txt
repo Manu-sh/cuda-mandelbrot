@@ -1,28 +1,27 @@
 cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
 project(cuda CXX CUDA)
 
+set(CMAKE_CUDA_STANDARD              17)
+set(CMAKE_CUDA_STANDARD_REQUIRED     ON)
+set(CMAKE_CUDA_ARCHITECTURES         89) # rtx 4000
+set(CMAKE_CUDA_SEPARABLE_COMPILATION ON) # Abilita le compilazioni separabili per supportare più file CUDA
+
 # cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
 # analyze-build --cdb compile_commands.json --use-analyzer `which clang`
 # or scanbuild make -j24
 #set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD          17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Imposta lo standard CUDA
-set(CMAKE_CUDA_STANDARD 17)
-set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 if(NOT CMAKE_BUILD_TYPE)
     # set(CMAKE_BUILD_TYPE Release)
     set(CMAKE_BUILD_TYPE Debug) # keep assertion() on
 endif()
 
-# rtx 4000
-set(CMAKE_CUDA_ARCHITECTURES 89)
-
-# Abilita le compilazioni separabili per supportare più file CUDA
-set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
+# equivalent of: strip --strip-all
+#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+add_link_options($<$<CONFIG:RELEASE>:-s>)
 
 set(INC_PATH  ${PROJECT_SOURCE_DIR}/include)
 set(SRC_PATH  ${PROJECT_SOURCE_DIR}/src)
@@ -32,7 +31,6 @@ add_executable(${PROJECT_NAME} ${SRC_PATH}/main.cu)
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${INC_PATH}
 )
-
 
 target_compile_options(${PROJECT_NAME} PRIVATE
         #-g
@@ -45,7 +43,6 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         -fstack-protector-all -fstack-protector-strong
         -O3 -ffast-math -funroll-loops -march=native -mtune=native
         -funswitch-loops -ftree-vectorize -fivopts -fmodulo-sched
-
 
         # -msse -msse2 -msse3 -msse4.1 -msse4.2 -mmmx -m3dnow -mavx2 -mavx512f
         # -mfma -mbmi -mxsave -mxsaveopt -mrdrnd
