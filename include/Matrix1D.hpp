@@ -9,7 +9,7 @@ template <typename T, const size_t ALIGNMENT = sizeof(T)>
 class Matrix1D {
 
     public:
-        constexpr static size_t matrix_type_alignment = ALIGNMENT;
+        static constexpr size_t matrix_type_alignment = ALIGNMENT; // A static data member declared constexpr on its first declaration is implicitly an inline variable.
         using matrix_type = T;
 
     private:
@@ -22,7 +22,7 @@ class Matrix1D {
         ~Matrix1D() { delete[] m_vct; }
 
         T & at(uint16_t r, uint16_t c);
-        inline T * unwrap() { return m_vct; }
+        inline T * unwrap()  noexcept { return m_vct; }
         inline uint16_t height() const noexcept { return m_height; }
         inline uint16_t  width() const noexcept { return m_width;  }
         inline uint32_t length() const noexcept { return m_length; }
@@ -39,7 +39,7 @@ class Matrix1D {
                 return (const T &)self->at(r, c);
         }
 
-        const T * unwrap() const {
+        inline const T * unwrap() const {
             Matrix1D<T> *const self = (Matrix1D<T>*)this; // avoid infinite recursion
             return (const T *)self->unwrap();
         }
