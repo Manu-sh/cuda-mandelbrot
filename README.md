@@ -2,30 +2,46 @@
 ###### how to use cuda acceleration to compute mandelbrot set
 
 The code is written for my ___rtx 4070s___ so there is no guarantee it will work on others gpus
-but it probably will work on every rtx 4000, i will take a closer look at portability in the future
+but it probably will work on every rtx 4000, ~~i will take a closer look at portability in the future~~
+
+you can select your architecture passing the `-DCMAKE_CUDA_ARCHITECTURES=XX` flag where `XX`
+is [your cuda architecture](https://developer.nvidia.com/cuda-gpus). 
+
+
+| GPU Series         | Compute Capability |
+|--------------------|-------------------|
+| RTX 40xx (Ada)     | 89                |
+| RTX 30xx (Ampere)  | 86                |
+| RTX 20xx (Turing)  | 75                |
+| GTX 16xx (Turing)  | 75                |
+| GTX 10xx (Pascal)  | 61, 62            |
+| GTX 900 (Maxwell)  | 50, 52            |
+
+otherwise you can use `nvcc -ls-arch` to get a detailed list of 
+
 
 ```bash
 mkdir -p build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
+
+cmake                         \ 
+-DCMAKE_BUILD_TYPE=Release    \
+-DCMAKE_CUDA_ARCHITECTURES=89 \
+..
+
 make -j`nproc --all`
 ./cuda
 feh test.ppm
 ```
 
+Learning resources
 
-https://en.wikipedia.org/wiki/Netpbm
-
-https://developer.nvidia.com/blog/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
-
-https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#thread-hierarchy
-
-https://codingbyexample.com/2018/12/17/cuda-threads-memory/
-
-https://www.youtube.com/playlist?list=PLC6u37oFvF40BAm7gwVP7uDdzmW83yHPe
-
-https://cuda-tutorial.readthedocs.io/en/latest/
-
-https://tschmidt23.github.io/cse599i/CSE%20599%20I%20Accelerated%20Computing%20-%20Programming%20GPUs%20Lecture%2017.pdf
+- https://en.wikipedia.org/wiki/Netpbm
+- https://developer.nvidia.com/blog/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
+- https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#thread-hierarchy
+- https://codingbyexample.com/2018/12/17/cuda-threads-memory/
+- https://www.youtube.com/playlist?list=PLC6u37oFvF40BAm7gwVP7uDdzmW83yHPe
+- https://cuda-tutorial.readthedocs.io/en/latest/
+- https://tschmidt23.github.io/cse599i/CSE%20599%20I%20Accelerated%20Computing%20-%20Programming%20GPUs%20Lecture%2017.pdf
 
 ```cpp
 PPM3 x{3, 2};
