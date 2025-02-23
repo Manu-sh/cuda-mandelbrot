@@ -5,7 +5,6 @@
 
 #include <cuda_runtime.h>
 #include <thrust/complex.h>
-#include <memalign/al_allocator.hpp>
 
 inline constexpr uint16_t cols = 1920, rows = 1080;
 //inline constexpr uint16_t cols = 4096, rows = 3112;
@@ -60,7 +59,6 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
 
 }
 
-#if 0
 int main() {
 
     cudaSetDevice(0);
@@ -89,42 +87,3 @@ int main() {
 
     return 0;
 }
-#else
-#include <iostream>
-#include <unistd.h>
-
-using std::cout, std::endl;
-int main() {
-
-    struct __attribute__((__packed__)) big_t {
-        big_t() {
-            p = malloc(113);
-            cout << "constructor called, malloc pointer " << p << '\n';
-        }
-        ~big_t() {
-            free(p);
-            cout << "destructor called, free pointer " << p << '\n';
-        }
-        void *p = nullptr;
-        char buf[11];
-    };
-
-    /*
-    cout << sizeof(big_t) << endl;
-    Matrix1D<big_t, 4> mtx{3, 2};
-    //Matrix1D<char, 3> mtx2{3, 3}; // should raise an error at compilation time
-    Matrix1D<char, 1> mtx2{3, 3};
-     */
-
-    ///std::basic_string<char, std::char_traits<char>, ::al_allocator<char, 32> > s;
-    //std::basic_string<char, std::char_traits<char>, std::allocator<char> > s;
-    //std::basic_string<char, std::char_traits<char>, ::fuck_allocator<char> > s;
-
-    std::basic_string<char, std::char_traits<char>, ::fuck_allocator<char> > s;
-    for (int i = 0, x = 1920 * 1080 * 2; i < x; ++i) {
-        s += std::string("ciao mondo");
-    }
-
-    return 0;
-}
-#endif

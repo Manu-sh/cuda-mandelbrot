@@ -1,7 +1,6 @@
 #pragma once
 #include <cstdint>
 #include <stdexcept>
-#include <type_traits>
 #include <new>
 #include <memalign/utils.hpp>
 
@@ -20,9 +19,7 @@ class Matrix1D {
     public:
 
         explicit Matrix1D(uint16_t height, uint16_t width);
-        ~Matrix1D() {
-            delete[] m_vct;
-        }
+        ~Matrix1D() { delete[] m_vct; }
 
         T & at(uint16_t r, uint16_t c);
         inline T * unwrap() { return m_vct; }
@@ -59,8 +56,7 @@ Matrix1D<T, ALIGNMENT>::Matrix1D(uint16_t height, uint16_t width)
         : m_width{width}, m_height{height}, m_length{(uint32_t)width*height} {
 
     static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)");
-
-    m_vct = new (std::align_val_t(ALIGNMENT)) T[m_length]; // initialize the memory block calling in-place new[]
+    m_vct = new (std::align_val_t(ALIGNMENT)) T[m_length];
 
     // passing a size in bytes which is not a multiple of ALIGNMENT result in UB
     // for example aligned_alloc(32, 65) and aligned_alloc(32, 63) are UB

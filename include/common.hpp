@@ -1,15 +1,9 @@
 #pragma once
 #include <cstdint>
-#include <cuda_runtime.h>
 
 // https://stackoverflow.com/questions/2151084/map-a-2d-array-onto-a-1d-array
 constexpr uint32_t AT(uint16_t cols, uint16_t r, uint16_t c) { // cols = width = x_size
     return r * cols + c;
-}
-
-//v[ __umul24(tr, gpu_cols) + c ] = calc_mandelbrot(tr, c);
-__device__ uint32_t ATfast(uint16_t cols, uint16_t r, uint16_t c) { // cols = width = x_size
-    return __umul24(r, cols) + c; //return r * cols + c;
 }
 
 struct alignas(32) rgb_t {
