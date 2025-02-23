@@ -4,6 +4,15 @@
 The code is written for my ___rtx 4070s___ so there is no guarantee it will work on others gpus
 but it probably will work on every rtx 4000, i will take a closer look at portability in the future
 
+```bash
+mkdir -p build && cd build
+cmake ..
+make -j`nproc --all`
+./cuda
+feh test.ppm
+```
+
+
 https://en.wikipedia.org/wiki/Netpbm
 
 https://developer.nvidia.com/blog/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
