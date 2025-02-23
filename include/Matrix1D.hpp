@@ -2,7 +2,9 @@
 #include <cstdint>
 #include <stdexcept>
 #include <new>
+
 #include <memalign/utils.hpp>
+#include <common.hpp>
 
 // memory aligned to 256 bit (32 byte) to use avx2
 template <typename T, const size_t ALIGNMENT = sizeof(T)>
@@ -22,25 +24,25 @@ class Matrix1D {
         ~Matrix1D() { delete[] m_vct; }
 
         T & at(uint16_t r, uint16_t c);
-        inline T * unwrap()  noexcept { return m_vct; }
-        inline uint16_t height() const noexcept { return m_height; }
-        inline uint16_t  width() const noexcept { return m_width;  }
-        inline uint32_t length() const noexcept { return m_length; }
-        inline uint64_t  bsize() const noexcept { return sizeof(T) * m_length; }
+        FORCED(inline) T * unwrap()  noexcept { return m_vct; }
+        FORCED(inline) uint16_t height() const noexcept { return m_height; }
+        FORCED(inline) uint16_t  width() const noexcept { return m_width;  }
+        FORCED(inline) uint32_t length() const noexcept { return m_length; }
+        FORCED(inline) uint64_t  bsize() const noexcept { return sizeof(T) * m_length; }
 
-        inline T & operator()(uint16_t r, uint16_t c) noexcept { return m_vct[r * m_width + c]; }
-        inline const T & operator()(uint16_t r, uint16_t c) const noexcept { return m_vct[r * m_width + c]; }
+        FORCED(inline) T & operator()(uint16_t r, uint16_t c) noexcept { return m_vct[r * m_width + c]; }
+        FORCED(inline) const T & operator()(uint16_t r, uint16_t c) const noexcept { return m_vct[r * m_width + c]; }
 
-        decltype(auto) at(uint16_t r, uint16_t c) const {
-            Matrix1D<T> *const self = (Matrix1D<T>*)this; // avoid infinite recursion
+        FORCED(inline) decltype(auto) at(uint16_t r, uint16_t c) const {
+            constexpr Matrix1D<T> *const self = (Matrix1D<T>*)this; // avoid infinite recursion
             if constexpr (sizeof(T) <= sizeof(long))
                 return (T)self->at(r, c);
             else
                 return (const T &)self->at(r, c);
         }
 
-        inline const T * unwrap() const {
-            Matrix1D<T> *const self = (Matrix1D<T>*)this; // avoid infinite recursion
+        FORCED(inline) const T * unwrap() const {
+            constexpr Matrix1D<T> *const self = (Matrix1D<T>*)this; // avoid infinite recursion
             return (const T *)self->unwrap();
         }
 

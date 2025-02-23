@@ -1,10 +1,11 @@
 #include <cassert>
 #include <cstdint>
-#include <ppm3.hpp>
-#include <common.hpp>
-
 #include <cuda_runtime.h>
 #include <thrust/complex.h>
+
+#include <ppm3.hpp>
+#include <common.hpp>
+#include <memalign/utils.hpp>
 
 inline constexpr uint16_t cols = 1920, rows = 1080;
 //inline constexpr uint16_t cols = 4096, rows = 3112;
@@ -64,7 +65,8 @@ int main() {
     cudaSetDevice(0);
 
     rgb_t *gpu_vct;
-    cudaMalloc(&gpu_vct, sizeof(rgb_t) * cols * rows);
+    //cudaMalloc(&gpu_vct, sizeof(rgb_t) * cols * rows);
+    cudaMalloc(&gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows));
 
     int maxThreadsPerBlock;
     cudaDeviceGetAttribute(&maxThreadsPerBlock, cudaDevAttrMaxThreadsPerBlock, 0);
@@ -79,7 +81,10 @@ int main() {
     cudaDeviceSynchronize(); // wait for gpu
 
     PPM3 img{cols, rows};
-    cudaMemcpy(img.unwrap(), gpu_vct, sizeof(PPM3::pixel_type) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    //cudaMemcpy(img.unwrap(), gpu_vct, sizeof(PPM3::pixel_type) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    cudaMemcpy(img.unwrap(), gpu_vct,
+               aligned_bsize_calc<PPM3::pixel_type_alignment>(sizeof(PPM3::pixel_type) * img.width() * img.height()),
+    cudaMemcpyDeviceToHost);
     img.write_file_content("test.ppm");
 
     cudaFree(gpu_vct);
