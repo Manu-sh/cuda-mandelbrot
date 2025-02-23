@@ -6,7 +6,7 @@ but it probably will work on every rtx 4000, i will take a closer look at portab
 
 ```bash
 mkdir -p build && cd build
-cmake ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j`nproc --all`
 ./cuda
 feh test.ppm
