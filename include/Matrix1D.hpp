@@ -57,7 +57,9 @@ Matrix1D<T, ALIGNMENT>::Matrix1D(uint16_t height, uint16_t width)
 
     static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)");
     m_vct = (T *)__builtin_assume_aligned(
-            new (std::align_val_t(ALIGNMENT)) T[aligned_bsize_calc<ALIGNMENT>(m_length)],
+            new (std::align_val_t(ALIGNMENT)) T[aligned_bsize_calc<ALIGNMENT>(
+                    aligned_bsize_calc<ALIGNMENT>(width) * height // align every row
+            )],
             ALIGNMENT
     );
 
