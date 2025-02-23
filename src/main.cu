@@ -60,7 +60,7 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
 
 }
 
-#if 1
+#if 0
 int main() {
 
     cudaSetDevice(0);
@@ -91,6 +91,7 @@ int main() {
 }
 #else
 #include <iostream>
+#include <unistd.h>
 
 using std::cout, std::endl;
 int main() {
@@ -116,8 +117,13 @@ int main() {
      */
 
     ///std::basic_string<char, std::char_traits<char>, ::al_allocator<char, 32> > s;
-    for (int i = 0; i < 100; ++i)
+    //std::basic_string<char, std::char_traits<char>, std::allocator<char> > s;
+    //std::basic_string<char, std::char_traits<char>, ::fuck_allocator<char> > s;
+
+    std::basic_string<char, std::char_traits<char>, ::fuck_allocator<char> > s;
+    for (int i = 0, x = 1920 * 1080 * 2; i < x; ++i) {
         s += std::string("ciao mondo");
+    }
 
     return 0;
 }
