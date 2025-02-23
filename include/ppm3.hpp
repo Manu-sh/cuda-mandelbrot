@@ -1,17 +1,12 @@
 #pragma once
 #include <cstdint>
-#include <cassert>
-#include <cinttypes>
 #include <sstream>
-#include <string>
 #include <fstream>
-#include <iostream>
 
 #include <common.hpp>
 #include <Matrix1D.hpp>
 
 // https://en.wikipedia.org/wiki/Netpbm
-
 struct PPM3: public Matrix1D<rgb_t> {
 
     constexpr static auto pixel_type_alignment = PPM3::Matrix1D<rgb_t>::matrix_type_alignment;
@@ -30,14 +25,14 @@ struct PPM3: public Matrix1D<rgb_t> {
 
     const PPM3 & write_file_content(const char *file_name) const {
 
-        alignas(PPM3::pixel_type) static const char *const map[256] = {
-             "0  ",  "1  ",   "2 ",   "3 ",   "4 ",   "5 ",   "6 ",   "7 ",   "8 ",   "9 ",   "10 ",  "11 ",  "12 ",  "13 ",  "14 ",  "15 ",
-             "16 ",  "17 ",  "18 ",  "19 ",   "20 ",  "21 ",  "22 ",  "23 ",  "24 ",  "25 ",  "26 ",  "27 ",  "28 ",  "29 ",  "30 ",  "31 ",
-             "32 ",  "33 ",  "34 ",  "35 ",   "36 ",  "37 ",  "38 ",  "39 ",  "40 ",  "41 ",  "42 ",  "43 ",  "44 ",  "45 ",  "46 ",  "47 ",
-             "48 ",  "49 ",  "50 ",  "51 ",   "52 ",  "53 ",  "54 ",  "55 ",  "56 ",  "57 ",  "58 ",  "59 ",  "60 ",  "61 ",  "62 ",  "63 ",
-             "64 ",  "65 ",  "66 ",  "67 ",   "68 ",  "69 ",  "70 ",  "71 ",  "72 ",  "73 ",  "74 ",  "75 ",  "76 ",  "77 ",  "78 ",  "79 ",
-             "80 ",  "81 ",  "82 ",  "83 ",   "84 ",  "85 ",  "86 ",  "87 ",  "88 ",  "89 ",  "90 ",  "91 ",  "92 ",  "93 ",  "94 ",  "95 ",
-             "96 ",  "97 ",  "98 ",  "99 ",  "100 ", "101 ", "102 ", "103 ", "104 ", "105 ", "106 ", "107 ", "108 ", "109 ", "110 ", "111 ",
+        alignas(PPM3::pixel_type) static const char *const map[aligned_bsize_calc<PPM3::pixel_type_alignment>(256)] = { // string_view perform worse
+             "0 ",  "1 ",    "2 ",   "3 ",    "4 ",   "5 ",   "6 ",   "7 ",   "8 ",   "9 ",  "10 ",  "11 ",  "12 ",  "13 ",  "14 ",  "15 ",
+            "16 ",  "17 ",  "18 ",  "19 ",   "20 ",  "21 ",  "22 ",  "23 ",  "24 ",  "25 ",  "26 ",  "27 ",  "28 ",  "29 ",  "30 ",  "31 ",
+            "32 ",  "33 ",  "34 ",  "35 ",   "36 ",  "37 ",  "38 ",  "39 ",  "40 ",  "41 ",  "42 ",  "43 ",  "44 ",  "45 ",  "46 ",  "47 ",
+            "48 ",  "49 ",  "50 ",  "51 ",   "52 ",  "53 ",  "54 ",  "55 ",  "56 ",  "57 ",  "58 ",  "59 ",  "60 ",  "61 ",  "62 ",  "63 ",
+            "64 ",  "65 ",  "66 ",  "67 ",   "68 ",  "69 ",  "70 ",  "71 ",  "72 ",  "73 ",  "74 ",  "75 ",  "76 ",  "77 ",  "78 ",  "79 ",
+            "80 ",  "81 ",  "82 ",  "83 ",   "84 ",  "85 ",  "86 ",  "87 ",  "88 ",  "89 ",  "90 ",  "91 ",  "92 ",  "93 ",  "94 ",  "95 ",
+            "96 ",  "97 ",  "98 ",  "99 ",  "100 ", "101 ", "102 ", "103 ", "104 ", "105 ", "106 ", "107 ", "108 ", "109 ", "110 ", "111 ",
             "112 ", "113 ", "114 ", "115 ",  "116 ", "117 ", "118 ", "119 ", "120 ", "121 ", "122 ", "123 ", "124 ", "125 ", "126 ", "127 ",
             "128 ", "129 ", "130 ", "131 ",  "132 ", "133 ", "134 ", "135 ", "136 ", "137 ", "138 ", "139 ", "140 ", "141 ", "142 ", "143 ",
             "144 ", "145 ", "146 ", "147 ",  "148 ", "149 ", "150 ", "151 ", "152 ", "153 ", "154 ", "155 ", "156 ", "157 ", "158 ", "159 ",
@@ -49,36 +44,30 @@ struct PPM3: public Matrix1D<rgb_t> {
             "240 ", "241 ", "242 ", "243 ",  "244 ", "245 ", "246 ", "247 ", "248 ", "249 ", "250 ", "251 ", "252 ", "253 ", "254 ", "255 "
         };
 
-        static_assert((sizeof map) % PPM3::pixel_type_alignment == 0, "invalid alignment for map[]");
+        alignas(PPM3::pixel_type) static const uint8_t map_length[aligned_bsize_calc<PPM3::pixel_type_alignment>(256)] = {
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+        };
 
-#if 1
-        std::ostringstream ss;
+        static const char *const *const aligned_map    = (const char **)__builtin_assume_aligned(map, PPM3::pixel_type_alignment);
+        static const uint8_t *const aligned_map_length = (const uint8_t *)__builtin_assume_aligned(map_length, PPM3::pixel_type_alignment);
 
-        // header
-        ss << m_type[0] << m_type[1] << '\n' // ppm type
-           << std::to_string(m_width) << ' ' << std::to_string(m_height) << '\n' // width x height
-           << "255\n";                                                           // end of header
-
-        std::string s{ss.str()};
-        s.reserve(s.length() + (m_length * strlen("255 ")) + 50);
-
-        for (uint16_t r = 0; r < m_height; ++r) {
-            for (uint16_t c = 0; c < m_width; ++c) {
-                const rgb_t px = this->operator()(r, c);
-                s += map[px.r];
-                s += map[px.b];
-                s += map[px.g];
-            }
-        }
-
-        using std::ios_base;
-
-        std::ofstream fppm3;
-        fppm3.exceptions(ios_base::failbit|ios_base::badbit);
-        fppm3.open(file_name, ios_base::out|ios_base::binary|ios_base::trunc);
-        fppm3.write(s.c_str(), s.length());
-
-#else
+        static_assert((sizeof map)        % PPM3::pixel_type_alignment == 0, "invalid alignment for map[]");
+        static_assert((sizeof map_length) % PPM3::pixel_type_alignment == 0, "invalid alignment for map_length[]");
         std::ostringstream ss;
 
         // header
@@ -89,22 +78,20 @@ struct PPM3: public Matrix1D<rgb_t> {
         for (uint16_t r = 0; r < m_height; ++r) {
             for (uint16_t c = 0; c < m_width; ++c) {
                 const rgb_t px = this->operator()(r, c);
-                ss << map[px.r]
-                   << map[px.b]
-                   << map[px.g] << "\n";
+                ss.write(aligned_map[px.r], aligned_map_length[px.r]);
+                ss.write(aligned_map[px.b], aligned_map_length[px.b]);
+                ss.write(aligned_map[px.g], aligned_map_length[px.g]);
             }
         }
 
         const auto s = ss.str();
-
         using std::ios_base;
 
         std::ofstream fppm3;
         fppm3.exceptions(ios_base::failbit|ios_base::badbit);
         fppm3.open(file_name, ios_base::out|ios_base::binary|ios_base::trunc);
-        fppm3.write(s.c_str(), s.length());
-        //fppm3 << s;
-#endif
+        fppm3.write(s.data(), s.length());
+
         return *this;
     }
 
