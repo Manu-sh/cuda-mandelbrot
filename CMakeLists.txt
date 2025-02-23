@@ -46,6 +46,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         -O3 -ffast-math -funroll-loops -march=native -mtune=native
         -funswitch-loops -ftree-vectorize -fivopts -fmodulo-sched
 
+
         # -msse -msse2 -msse3 -msse4.1 -msse4.2 -mmmx -m3dnow -mavx2 -mavx512f
         # -mfma -mbmi -mxsave -mxsaveopt -mrdrnd
 )
