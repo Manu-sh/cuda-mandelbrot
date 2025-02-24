@@ -81,10 +81,8 @@ int main() {
     cudaDeviceSynchronize(); // wait for gpu
 
     PPM3 img{cols, rows};
-    //cudaMemcpy(img.unwrap(), gpu_vct, sizeof(PPM3::pixel_type) * img.width() * img.height(), cudaMemcpyDeviceToHost);
-    cudaMemcpy(img.unwrap(), gpu_vct,
-               aligned_bsize_calc<PPM3::pixel_type_alignment>(sizeof(PPM3::pixel_type) * img.width() * img.height()),
-    cudaMemcpyDeviceToHost);
+    // cudaMemcpy(img.unwrap(), gpu_vct, sizeof(PPM3::pixel_type) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    cudaMemcpy(img.unwrap(), gpu_vct, aligned_bsize_calc<PPM3::pixel_type_alignment>(sizeof(PPM3::pixel_type) * img.width() * img.height()), cudaMemcpyDeviceToHost);
     img.write_file_content("test.ppm");
 
     cudaFree(gpu_vct);
