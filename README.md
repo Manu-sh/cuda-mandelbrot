@@ -57,10 +57,10 @@ x(1,2) = {0,   0,   0};
 x.write_file_content("color.ppm");
 ```
 
-
 profiling, nvprof is a sort of compatibility layer to use old nvprof syntax, 
 but most of nvprof flags are simply ignored by nsys
 
+gpu profiling
 ```
 nsys --help profile
 nsys --help nvprof
@@ -70,6 +70,23 @@ nsys profile -o report.qdrep ./cuda
 nsys nvprof ./cuda 
 nsys profile --stats=true ./cuda
 nsys nvprof --print-gpu-trace ./cuda 
+```
+
+cpu profiling
+```sh
+perf stat -e task-clock,cycles,instructions,r1b1,r10e,stalled-cycles-frontend,stalled-cycles-backend,L1-dcache-load-misses,cache-misses ./cuda
+perf stat -r 10 valgrind --tool=callgrind ./cuda
+valgrind --tool=callgrind ./cuda
+```
+
+dynamic analysis
+```
+valgrind --undef-value-errors=no --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./cuda
+```
+
+asm
+```sh
+objdump -S -M intel cuda | gedit - &
 ```
 
 ###### Copyright © 2025, [Manu-sh](https://github.com/Manu-sh), s3gmentationfault@gmail.com. Released under the [MIT license](LICENSE).
