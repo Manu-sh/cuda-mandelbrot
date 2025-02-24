@@ -38,7 +38,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE
-        -g
+        #-g
         #-D_DEBUG -G # abilita il dbg su cpu e gpu
         -Xptxas
         -O3
