@@ -26,7 +26,7 @@ endif()
 
 # equivalent of: strip --strip-all
 #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
-add_link_options($<$<CONFIG:RELEASE>:-s>)
+#add_link_options($<$<CONFIG:RELEASE>:-s>)
 
 set(INC_PATH  ${PROJECT_SOURCE_DIR}/include)
 set(SRC_PATH  ${PROJECT_SOURCE_DIR}/src)
