@@ -5,7 +5,7 @@ set(CMAKE_CUDA_STANDARD              17)
 set(CMAKE_CUDA_STANDARD_REQUIRED     ON)
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON) # Abilita le compilazioni separabili per supportare più file CUDA
 
-if(NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_CUDA_ARCHITECTURES)
     # -arch=sm_89 -gencode=arch=compute_89,code=sm_89 -gencode=arch=compute_89,code=compute_89 (https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/)
     message("CMAKE_CUDA_ARCHITECTURES is not set, using 89")
     set(CMAKE_CUDA_ARCHITECTURES 89) # rtx 4000
