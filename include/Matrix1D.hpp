@@ -10,6 +10,9 @@
 template <typename T, const size_t ALIGNMENT = sizeof(T)>
 class Matrix1D {
 
+    static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)");
+    static_assert(is_multiple_of_word(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a multiple of sizeof(void*))");
+
     public:
         static constexpr size_t matrix_type_alignment = ALIGNMENT; // A static data member declared constexpr on its first declaration is implicitly an inline variable.
         using matrix_type = T;
@@ -57,7 +60,6 @@ template <typename T, const size_t ALIGNMENT>
 Matrix1D<T, ALIGNMENT>::Matrix1D(uint16_t height, uint16_t width)
         : m_width{width}, m_height{height}, m_length{(uint32_t)width*height} {
 
-    static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)");
     m_vct = (T *)__builtin_assume_aligned(
             new (std::align_val_t(ALIGNMENT)) T[aligned_bsize_calc<ALIGNMENT>(
                     aligned_bsize_calc<ALIGNMENT>(width) * height // align every row
