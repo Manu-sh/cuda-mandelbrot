@@ -17,7 +17,7 @@ constexpr FORCED(inline) uint32_t AT(uint16_t cols, uint16_t r, uint16_t c) { //
     return r * cols + c;
 }
 
-struct alignas(8) rgb_t {
+struct alignas(16) rgb_t {
     uint8_t r;
     uint8_t b;
     uint8_t g;
