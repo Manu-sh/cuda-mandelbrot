@@ -77,6 +77,7 @@ cpu profiling
 perf stat -e task-clock,cycles,instructions,r1b1,r10e,stalled-cycles-frontend,stalled-cycles-backend,L1-dcache-load-misses,cache-misses ./cuda
 perf stat -r 10 valgrind --tool=callgrind ./cuda
 valgrind --tool=callgrind ./cuda
+valgrind --tool=callgrind ./cuda | kcachegrind
 ```
 
 dynamic analysis

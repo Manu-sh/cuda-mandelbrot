@@ -1,8 +1,11 @@
 #pragma once
 #include <cstdint>
+#include <cstring>
 #include <sstream>
 #include <string>
 #include <fstream>
+#include <memory>
+#include <iterator>
 
 #include <common.hpp>
 #include <Matrix1D.hpp>
@@ -10,8 +13,8 @@
 // https://en.wikipedia.org/wiki/Netpbm
 struct PPM3: public Matrix1D<rgb_t> {
 
-    static constexpr auto pixel_type_alignment = PPM3::Matrix1D<rgb_t>::matrix_type_alignment;
-    using pixel_type = typename PPM3::Matrix1D<rgb_t>::matrix_type;
+    static constexpr auto pixel_type_alignment = PPM3::Matrix1D<rgb_t>::matrix_cell_alignment; // sizeof(rgb_t) == alignof(rgb_t)
+    using pixel_type = typename PPM3::Matrix1D<rgb_t>::matrix_cell_type; // simply rgb_t
 
     PPM3(const PPM3 &o) = delete;
     PPM3 & operator=(const PPM3 &o) = delete;
@@ -22,8 +25,7 @@ struct PPM3: public Matrix1D<rgb_t> {
 
     const PPM3 & write_file_content(const char *const file_name) const {
 
-        //alignas(PPM3::pixel_type) static constexpr const char *const map[aligned_bsize_calc<PPM3::pixel_type_alignment>(256)] = { // string_view perform worse
-        alignas(PPM3::pixel_type) static constexpr const char *const map[256] = { // string_view perform worse
+        static constexpr const char *const map[256] = { // string_view perform worse
              "0 ",  "1 ",    "2 ",   "3 ",    "4 ",   "5 ",   "6 ",   "7 ",   "8 ",   "9 ",  "10 ",  "11 ",  "12 ",  "13 ",  "14 ",  "15 ",
             "16 ",  "17 ",  "18 ",  "19 ",   "20 ",  "21 ",  "22 ",  "23 ",  "24 ",  "25 ",  "26 ",  "27 ",  "28 ",  "29 ",  "30 ",  "31 ",
             "32 ",  "33 ",  "34 ",  "35 ",   "36 ",  "37 ",  "38 ",  "39 ",  "40 ",  "41 ",  "42 ",  "43 ",  "44 ",  "45 ",  "46 ",  "47 ",
@@ -42,8 +44,7 @@ struct PPM3: public Matrix1D<rgb_t> {
             "240 ", "241 ", "242 ", "243 ",  "244 ", "245 ", "246 ", "247 ", "248 ", "249 ", "250 ", "251 ", "252 ", "253 ", "254 ", "255 "
         };
 
-        //alignas(PPM3::pixel_type) static constexpr const uint8_t map_length[aligned_bsize_calc<PPM3::pixel_type_alignment>(256)] = {
-        alignas(PPM3::pixel_type) static constexpr const uint8_t map_length[256] = {
+        static constexpr const uint8_t map_length[256] = {
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -62,12 +63,6 @@ struct PPM3: public Matrix1D<rgb_t> {
             4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
         };
 
-        //static_assert(PPM3::pixel_type_alignment == 32, "oops");
-        //const auto *const *const aligned_map = (const char **)__builtin_assume_aligned(map, PPM3::pixel_type_alignment);
-        //const auto *const aligned_map_length = (const uint8_t *)__builtin_assume_aligned(map, PPM3::pixel_type_alignment);
-
-        // static_assert((sizeof map)        % PPM3::pixel_type_alignment == 0, "invalid alignment for map[]");
-        // static_assert((sizeof map_length) % PPM3::pixel_type_alignment == 0, "invalid alignment for map_length[]");
         std::ostringstream ss;
 
         // header
@@ -75,14 +70,33 @@ struct PPM3: public Matrix1D<rgb_t> {
            << std::to_string(m_width) << ' ' << std::to_string(m_height) << '\n' // width x height
            << "255\n";                                                           // end of header
 
+
+        // +1 for null terminator we actually dont use but we need *p
+        // to be writeable to make use of std::distance(mem, p)
+#if 1
+        const auto length = aligned_bsize_calc<PPM3::pixel_type_alignment>(12 * m_length + 1); // 12 -> strlen("255 255 255 ")
+        alignas(PPM3::pixel_type_alignment) char *const mem = new (std::align_val_t(PPM3::pixel_type_alignment)) char[length];
+        static constexpr auto deleter_fix = [](char *const v) { operator delete[](v, std::align_val_t(PPM3::pixel_type_alignment)); };
+        std::unique_ptr<char[], decltype(deleter_fix)> ret{mem, deleter_fix};
+#else
+        const auto length = 12 * m_length + 1; // 12 -> strlen("255 255 255 ")
+        std::unique_ptr<char[]> ret{new char[length]};
+        char *const mem = ret.get();
+#endif
+        char *p = mem;
+
         for (uint16_t r = 0; r < m_height; ++r) {
             for (uint16_t c = 0; c < m_width; ++c) {
                 const rgb_t px = this->operator()(r, c);
-                ss.write(map[px.r], map_length[px.r]);
-                ss.write(map[px.b], map_length[px.b]);
-                ss.write(map[px.g], map_length[px.g]);
+                memcpy(p, map[px.r], map_length[px.r]), p += map_length[px.r];
+                memcpy(p, map[px.g], map_length[px.g]), p += map_length[px.g];
+                memcpy(p, map[px.b], map_length[px.b]), p += map_length[px.b];
             }
         }
+
+        assert(p <= &mem[length-1]);
+        assert(std::distance(mem, p) <= length-1);
+        *p = '\0'; // this is accessible
 
         const auto s = ss.str();
         using std::ios_base;
@@ -91,6 +105,7 @@ struct PPM3: public Matrix1D<rgb_t> {
         fppm3.exceptions(ios_base::failbit|ios_base::badbit);
         fppm3.open(file_name, ios_base::out|ios_base::binary|ios_base::trunc);
         fppm3.write(s.data(), s.length());
+        fppm3.write(mem, std::distance(mem, p));
 
         return *this;
     }

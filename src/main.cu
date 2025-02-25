@@ -65,7 +65,7 @@ int main() {
     cudaSetDevice(0);
 
     rgb_t *gpu_vct;
-    // cudaMalloc(&gpu_vct, sizeof(rgb_t) * cols * rows);
+    cudaMalloc(&gpu_vct, sizeof(rgb_t) * cols * rows);
     cudaMalloc(&gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows));
 
     int maxThreadsPerBlock;
@@ -81,8 +81,10 @@ int main() {
     cudaDeviceSynchronize(); // wait for gpu
 
     PPM3 img{cols, rows};
-    //cudaMemcpy(img.unwrap(), gpu_vct, sizeof(PPM3::pixel_type) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    cudaMemcpy(img.unwrap(), gpu_vct, sizeof(rgb_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
     cudaMemcpy(img.unwrap(), gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows), cudaMemcpyDeviceToHost);
+
+    //memset(img.unwrap(), 0xff, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows));
     img.write_file_content("test.ppm");
 
     cudaFree(gpu_vct);
