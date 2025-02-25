@@ -3,7 +3,7 @@
 #include <cuda_runtime.h>
 #include <thrust/complex.h>
 
-#include <ppm3.hpp>
+#include <PPM.hpp>
 #include <common.hpp>
 #include <memalign/utils.hpp>
 
@@ -80,12 +80,27 @@ int main() {
     kernel<<<blocksDim, threadsPerBlock>>>(gpu_vct, cols * rows);
     cudaDeviceSynchronize(); // wait for gpu
 
-    PPM3 img{cols, rows};
+    PPM img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(rgb_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
     cudaMemcpy(img.unwrap(), gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows), cudaMemcpyDeviceToHost);
 
     //memset(img.unwrap(), 0xff, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows));
-    img.write_file_content("test.ppm");
+    img.write_file_content<PPM::Format::PPM3>("test.ppm3");
+    img.write_file_content<PPM::Format::PPM6>("test.ppm6");
+
+    PPM x{3, 2};
+    //memset(x.unwrap(), 0xff, 3*2);
+
+    x(0,0) = {255, 0,   0};
+    x(0,1) = {0,   255, 0};
+    x(0,2) = {0,   0,   255};
+
+    x(1,0) = {255, 255, 0};
+    x(1,1) = {255, 255, 255};
+    x(1,2) = {0,   0,   0};
+
+    x.write_file_content<PPM::Format::PPM6>("color.ppm6");
+    x.write_file_content<PPM::Format::PPM3>("color.ppm3");
 
     cudaFree(gpu_vct);
     cudaDeviceReset();
