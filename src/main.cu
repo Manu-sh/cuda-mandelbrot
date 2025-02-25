@@ -4,8 +4,12 @@
 #include <thrust/complex.h>
 
 #include <PPM.hpp>
+#include <PGM.hpp>
 #include <common.hpp>
+#include <pixels.hpp>
 #include <memalign/utils.hpp>
+
+using namespace pixels;
 
 inline constexpr uint16_t cols = 1920, rows = 1080;
 //inline constexpr uint16_t cols = 4096, rows = 3112;
@@ -61,6 +65,8 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
 }
 
 int main() {
+
+    PGM<grayscale8_t> pgm{3, 2};
 
     cudaSetDevice(0);
 
