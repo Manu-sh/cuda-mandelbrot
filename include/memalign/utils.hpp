@@ -13,6 +13,7 @@ constexpr FORCED(inline) bool is_multiple_of_word(size_t n) {
 
 // calc the closest number to desired_bsize aligned to alignment,
 // es. f(1, 32) -> 32, f(33, 32) -> 64
+// https://en.cppreference.com/w/c/memory/aligned_alloc#Notes
 template <const size_t ALIGNMENT>
 constexpr FORCED(inline) auto aligned_bsize_calc(size_t desired_bsize) {
     static_assert(is_power_of_2(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a power of 2)"); // required by all decent implementations

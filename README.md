@@ -44,7 +44,7 @@ Learning resources
 - https://tschmidt23.github.io/cse599i/CSE%20599%20I%20Accelerated%20Computing%20-%20Programming%20GPUs%20Lecture%2017.pdf
 
 ```cpp
-PPM3 x{3, 2};
+PPM x{3, 2};
 
 x(0,0) = {255, 0,   0};
 x(0,1) = {0,   255, 0};
@@ -54,7 +54,7 @@ x(1,0) = {255, 255, 0};
 x(1,1) = {255, 255, 255};
 x(1,2) = {0,   0,   0};
 
-x.write_file_content("color.ppm");
+x.write_file_content<PPM::Format::PPM3>("color.ppm");
 ```
 
 profiling, nvprof is a sort of compatibility layer to use old nvprof syntax, 
