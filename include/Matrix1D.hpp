@@ -14,8 +14,8 @@ class Matrix1D {
     static_assert(is_multiple_of_word(ALIGNMENT), "invalid alignment value for ALIGNMENT (should be a multiple of sizeof(void*))");
 
     public:
-        static constexpr size_t matrix_type_alignment = ALIGNMENT; // A static data member declared constexpr on its first declaration is implicitly an inline variable.
-        using matrix_type = T;
+        static constexpr size_t matrix_cell_alignment = ALIGNMENT; // A static data member declared constexpr on its first declaration is implicitly an inline variable.
+        using matrix_cell_type = T;
 
     private:
         Matrix1D(const Matrix1D &o) = delete;
@@ -24,7 +24,10 @@ class Matrix1D {
     public:
 
         explicit Matrix1D(uint16_t height, uint16_t width);
-        ~Matrix1D() { delete[] m_vct; }
+        ~Matrix1D() {
+            //delete[] m_vct;
+            operator delete[](m_vct, std::align_val_t(ALIGNMENT));
+        }
 
         T & at(uint16_t r, uint16_t c);
         FORCED(inline) T * unwrap()  noexcept { return m_vct; }
