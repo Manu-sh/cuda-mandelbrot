@@ -85,9 +85,10 @@ int main() {
     cudaMemcpy(img.unwrap(), gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows), cudaMemcpyDeviceToHost);
 
     //memset(img.unwrap(), 0xff, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows));
-    img.write_file_content<PPM::Format::PPM3>("test.ppm3");
+    //img.write_file_content<PPM::Format::PPM3>("test.ppm3");
     img.write_file_content<PPM::Format::PPM6>("test.ppm6");
 
+#if 0
     PPM x{3, 2};
     //memset(x.unwrap(), 0xff, 3*2);
 
@@ -101,6 +102,7 @@ int main() {
 
     x.write_file_content<PPM::Format::PPM6>("color.ppm6");
     x.write_file_content<PPM::Format::PPM3>("color.ppm3");
+#endif
 
     cudaFree(gpu_vct);
     cudaDeviceReset();
