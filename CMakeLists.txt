@@ -30,12 +30,17 @@ endif()
 
 set(INC_PATH  ${PROJECT_SOURCE_DIR}/include)
 set(SRC_PATH  ${PROJECT_SOURCE_DIR}/src)
+set(LIB_PATH  ${PROJECT_SOURCE_DIR}/pnm/lib)
 
 add_executable(${PROJECT_NAME} ${SRC_PATH}/main.cu)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${INC_PATH}
 )
+
+# add & link pnm
+add_subdirectory(pnm)
+target_link_libraries(${PROJECT_NAME} PRIVATE pnm)
 
 target_compile_options(${PROJECT_NAME} PRIVATE
         -g

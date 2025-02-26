@@ -1,5 +1,8 @@
 #pragma once
-#include <memalign/utils.hpp>
+#include <cstddef>
+#include <new>
+
+#include <pnm/memalign/utils.hpp>
 
 template <typename T, const size_t ALIGNMENT>
 struct AlignedAllocator {
@@ -14,23 +17,16 @@ struct AlignedAllocator {
     constexpr static auto alignment = ALIGNMENT;
     using value_type = T;
 
-    inline constexpr T * allocate(size_t length) { // allocate but not construct the element
+    inline T * allocate(size_t length) { // allocate but not construct the element
         const auto aligned_bsize = aligned_bsize_calc<ALIGNMENT>(length * sizeof(T));
-        T *p = (T *)::operator new[](length, std::align_val_t(ALIGNMENT));
+        T *p = (T *)::operator new[](aligned_bsize, std::align_val_t(ALIGNMENT));
         if (!p || ((long)p) % ALIGNMENT != 0) throw std::bad_alloc{}; // "incorrectly aligned memory"
         return p;
     }
 
     inline void deallocate(T *p, [[maybe_unused]] size_t n = 0) noexcept { // deallocate but do not destruct the element (void *) prevent destruct to be called for T
-        operator delete[]((void *)p, std::align_val_t(ALIGNMENT));
-    }
-
-    constexpr void destroy_at(T *p) {
-        if constexpr (std::is_array_v<T>)
-            for (auto &elem : *p)
-                (destroy_at)(std::addressof(elem));
-        else
-            p->~T();
+        if (((long)p) % ALIGNMENT != 0) throw std::bad_alloc{}; // "incorrectly aligned memory"
+        ::operator delete[]((void *)p, std::align_val_t(ALIGNMENT));
     }
 
     template <typename U>
