@@ -66,7 +66,7 @@ __global__ void kernel(rgb_t *const v, uint32_t len) {
 
 int main() {
 
-    PGM<grayscale8_t> pgm{3, 2};
+    //PGM<grayscale8_t> pgm{3, 2};
 
     cudaSetDevice(0);
 
@@ -88,7 +88,8 @@ int main() {
 
     PPM img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(rgb_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
-    cudaMemcpy(img.unwrap(), gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows), cudaMemcpyDeviceToHost);
+   // cudaMemcpy(img.unwrap(), gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows), cudaMemcpyDeviceToHost);
+   cudaMemcpy(img.unwrap(), gpu_vct, sizeof(rgb_t) * cols * rows, cudaMemcpyDeviceToHost);
 
     //memset(img.unwrap(), 0xff, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows));
     //img.write_file_content<PPM::Format::PPM3>("test.ppm3");

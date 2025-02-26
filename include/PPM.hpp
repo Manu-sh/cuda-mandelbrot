@@ -9,26 +9,25 @@
 
 #include <common.hpp>
 #include <pixels.hpp>
-#include <Matrix1D.hpp>
+#include <AlignedMatrix1D.hpp>
+#include <memalign/utils.hpp>
 
 using pixels::rgb_t;
 
 // https://en.wikipedia.org/wiki/Netpbm
-struct PPM: public Matrix1D<rgb_t> {
+struct PPM: public AlignedMatrix1D<rgb_t> {
+
+    using ContainerMatrix = AlignedMatrix1D<rgb_t>;
+    static constexpr auto pixel_type_alignment = ContainerMatrix::matrix_cell_alignment; // sizeof(rgb_t) == alignof(rgb_t)
+    using pixel_type = typename ContainerMatrix::matrix_cell_type; // simply rgb_t
+    using ContainerMatrix::ContainerMatrix;
 
     enum class Format: uint8_t {
         PPM3, PPM6
     };
 
-    static constexpr auto pixel_type_alignment = PPM::Matrix1D<rgb_t>::matrix_cell_alignment; // sizeof(rgb_t) == alignof(rgb_t)
-    using pixel_type = typename PPM::Matrix1D<rgb_t>::matrix_cell_type; // simply rgb_t
-
     PPM(const PPM &o) = delete;
     PPM & operator=(const PPM &o) = delete;
-
-    explicit PPM(uint16_t width, uint16_t height)
-        : Matrix1D<rgb_t>{height, width} {
-    }
 
     template <Format format>
     constexpr FORCED(inline) const PPM & write_file_content(const char *const file_name) const {
@@ -101,8 +100,8 @@ const PPM & PPM::write_file_content_ppm3(const char *const file_name) const {
     std::unique_ptr<char[], decltype(deleter_fix)> ret{mem, deleter_fix};
 #else
     const auto bsize = 12 * m_length + 1; // 12 -> strlen("255 255 255 ")
-            std::unique_ptr<char[]> ret{new char[bsize]};
-            char *const mem = ret.get();
+    std::unique_ptr<char[]> ret{new char[bsize]};
+    char *const mem = ret.get();
 #endif
     char *p = mem;
 
