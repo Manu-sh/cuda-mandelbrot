@@ -81,7 +81,7 @@ int main() {
     cudaDeviceSynchronize(); // wait for gpu
 
     PPM img{cols, rows};
-    cudaMemcpy(img.unwrap(), gpu_vct, sizeof(rgb_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    //cudaMemcpy(img.unwrap(), gpu_vct, sizeof(rgb_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
     cudaMemcpy(img.unwrap(), gpu_vct, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows), cudaMemcpyDeviceToHost);
 
     //memset(img.unwrap(), 0xff, aligned_bsize_calc<sizeof(rgb_t)>(sizeof(rgb_t) * cols * rows));
