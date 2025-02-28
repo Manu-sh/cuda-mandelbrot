@@ -74,7 +74,7 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 }
 
 int main() {
-#if 1
+#if 0
     PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};
 
     x(0,0) = {255, 0,   0};

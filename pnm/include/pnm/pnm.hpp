@@ -42,7 +42,7 @@ namespace pnm {
 
 
     template <>
-    struct grayscale<BIT_16> {
+    struct __attribute__((__packed__)) grayscale<BIT_16> {
         grayscale() = default;
         inline constexpr grayscale(uint16_t r, uint16_t g, uint16_t b): data(.3 * r + .59 * g + .11 * b) {} // convert from rgb to grayscale using the luminosity method
         inline constexpr grayscale(const rgb<BIT_16> &px): grayscale{px.r, px.b, px.g} {}

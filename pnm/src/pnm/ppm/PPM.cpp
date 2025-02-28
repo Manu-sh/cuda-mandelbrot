@@ -9,31 +9,17 @@
 #include <cstring>
 #include <memory>
 #include <new>
+#include <utility>
 
 
 template <>
 const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_ppm3(const char *const file_name) const {
 
-    static const uint8_t pixel_length = strlen("255 255 255 ");
+    // +1 for null terminator we actually dont use
+    const auto bsize = 12 * m_length + 1; // 12 -> strlen("255 255 255 ")
 
-    // +1 for null terminator we actually dont use but we need *p
-    // to be writeable to make use of std::distance(mem, last)
-    const auto bsize = pixel_length * m_length + 1;
-    std::unique_ptr<char[]> ret{new char[bsize]};
-    char *const mem = ret.get();
-    char *p = mem;
-
-    /*
-    for (uint16_t r = 0; r < m_height; ++r) {
-        for (uint16_t c = 0; c < m_width; ++c) {
-            const pnm::rgb<pnm::BIT_8> px = this->operator()(r, c);
-            memcpy(p, map_ascii[px.r], map_length[px.r]), p += map_length[px.r];
-            memcpy(p, map_ascii[px.b], map_length[px.b]), p += map_length[px.b];
-            memcpy(p, map_ascii[px.g], map_length[px.g]), p += map_length[px.g];
-        }
-    }
-    */
-
+    std::unique_ptr<uint8_t[]> mem{new uint8_t[bsize]};
+    uint8_t *p = mem.get();
 
     for (uint32_t i = 0; i < m_length; ++i) {
         const pnm::rgb<pnm::BIT_8> px = this->m_vct[i];
@@ -42,13 +28,14 @@ const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_
         memcpy(p, map_ascii[px.g], map_length[px.g]), p += map_length[px.g];
     }
 
-
-    assert(p <= &mem[bsize-1]);
-    assert((size_t)std::distance(mem, p) <= bsize-1);
+    const uint8_t *const beg = mem.get();
+    const uint8_t *const end = p;
+    assert(end <= &beg[bsize-1]);
+    assert((size_t)std::distance(beg, end) <= bsize-1);
     *p = '\0'; // p is writable here
 
     auto header = pnm::Header<pnm::Format::PPM3, pnm::BIT_8>{m_width, m_height};
-    return ::write_file_content(file_name, header, (uint8_t *)mem, (uint8_t *)p), *this;
+    return ::write_file_content(file_name, header, beg, p), *this;
 }
 
 
