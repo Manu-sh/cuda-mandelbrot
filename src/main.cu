@@ -7,6 +7,7 @@
 #include <pnm/pgm/PGM.hpp>
 #include <pnm/ppm/PPM.hpp>
 
+#include <pnm/pnm.hpp>
 #include <pnm/common.hpp>
 #include <pnm/memalign/utils.hpp>
 
@@ -73,7 +74,39 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 
 }
 
+#include <iostream>
+using namespace std;
 int main() {
+
+    BN bn{0b0101'0101};
+
+    // array di byte bn indice di spiazzamento inner_mtx[i%8]
+    // una matrice di array di bit multipli di 8 con del padding
+
+    // row_padding -> desidered_row_length%8
+
+    cout << (int)bn.data << endl;
+    cout << (int)bn[0] << " ";
+    cout << (int)bn[1] << " ";
+    cout << (int)bn[2] << " ";
+    cout << (int)bn[3] << " ";
+    cout << (int)bn[4] << " ";
+    cout << (int)bn[5] << " ";
+    cout << (int)bn[6] << " ";
+    cout << (int)bn[7] << endl;
+
+    cout << "\nas mtx: " << endl;
+    cout << (int)bn(0,0) << " ";
+    cout << (int)bn(0,1) << " ";
+    cout << (int)bn(0,2) << " ";
+    cout << (int)bn(0,3) << endl;
+
+    cout << (int)bn(1,0) << " ";
+    cout << (int)bn(1,1) << " ";
+    cout << (int)bn(1,2) << " ";
+    cout << (int)bn(1,3) << endl;
+
+    return 0;
 #if 0
     PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};
 
