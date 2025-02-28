@@ -54,7 +54,7 @@ x(1,0) = {255, 255, 0};
 x(1,1) = {255, 255, 255};
 x(1,2) = {0,   0,   0};
 
-x.write_file_content<PPM::Format::PPM3>("color.ppm");
+x.write_file_content<pnm::ppm::Format::PPM3>("color.ppm");
 ```
 
 profiling, nvprof is a sort of compatibility layer to use old nvprof syntax, 
