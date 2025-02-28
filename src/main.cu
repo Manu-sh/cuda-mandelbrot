@@ -61,12 +61,12 @@ __device__ Pixel calc_mandelbrot(uint16_t ix, uint16_t iy) {
 template<typename Pixel>
 __global__ void kernel(Pixel *const v, uint32_t len) {
 
-          uint16_t tr = blockIdx.y * blockDim.y + threadIdx.y;
+    uint16_t tr = blockIdx.y * blockDim.y + threadIdx.y;
     const uint16_t tc = blockIdx.x * blockDim.x + threadIdx.x;
 
-    #pragma unroll
+#pragma unroll
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
-        #pragma unroll
+#pragma unroll
         for (uint16_t c = tc; c < gpu_cols; c += blockDim.x * gridDim.x)
             v[AT(gpu_cols, tr, c)] = calc_mandelbrot<Pixel>(tr, c);
     }
@@ -74,7 +74,38 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 }
 
 int main() {
+#if 0
+    PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};
 
+    x(0,0) = {255, 0,   0};
+    x(0,1) = {0,   255, 0};
+    x(0,2) = {0,   0,   255};
+
+    x(1,0) = {255, 255, 0};
+    x(1,1) = {255, 255, 255};
+    x(1,2) = {0,   0,   0};
+
+    x.write_file_content<pnm::Format::PPM3>("color.ppm3");
+    x.write_file_content<pnm::Format::PPM6>("color.ppm6");
+    return 0;
+
+    PGM<pnm::grayscale<pnm::BIT_8>> pgm{3, 2};
+
+    pgm(0,0) = {255, 0,   0};
+    pgm(0,1) = {0,   255, 0};
+    pgm(0,2) = {0,   0,   255};
+
+    pgm(1,0) = {255, 255, 0};
+    pgm(1,1) = {255, 255, 255};
+    pgm(1,2) = {0,   0,   0};
+
+    pgm.write_file_content<pnm::Format::PGM2>("test.pgm2");
+    pgm.write_file_content<pnm::Format::PGM5>("test.pgm5");
+    return 0;
+#endif
+
+    //using pixel_t = rgb_t;
+    //using pixel_t = pnm::grayscale<pnm::BIT_8>;
     using pixel_t = pnm::rgb<pnm::BIT_8>;
     cudaSetDevice(0);
 
@@ -93,9 +124,18 @@ int main() {
     kernel<<<blocksDim, threadsPerBlock>>>(gpu_vct, cols * rows);
     cudaDeviceSynchronize(); // wait for gpu
 
-    PPM img{cols, rows};
+#if 0
+    PGM<pixel_t> img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    img.write_file_content<pnm::Format::PGM2>("test.ppm2");
+    img.write_file_content<pnm::Format::PGM5>("test.ppm5");
+#endif
+
+    PPM<pixel_t> img{cols, rows};
+    cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    img.write_file_content<pnm::Format::PPM6>("test.ppm6");
     img.write_file_content<pnm::Format::PPM3>("test.ppm3");
+
 
     cudaFree(gpu_vct);
     cudaDeviceReset();

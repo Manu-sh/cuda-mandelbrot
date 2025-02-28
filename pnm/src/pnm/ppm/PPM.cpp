@@ -12,7 +12,8 @@
 #include <new>
 
 
-const PPM & PPM::write_file_content_ppm3(const char *const file_name) const {
+template <>
+const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_ppm3(const char *const file_name) const {
 
     // +1 for null terminator we actually dont use but we need *p
     // to be writeable to make use of std::distance(mem, last)
@@ -32,7 +33,7 @@ const PPM & PPM::write_file_content_ppm3(const char *const file_name) const {
 
     for (uint16_t r = 0; r < m_height; ++r) {
         for (uint16_t c = 0; c < m_width; ++c) {
-            const rgb_t px = this->operator()(r, c);
+            const pnm::rgb<pnm::BIT_8> px = this->operator()(r, c);
             memcpy(p, map_ascii[px.r], map_length[px.r]), p += map_length[px.r];
             memcpy(p, map_ascii[px.b], map_length[px.b]), p += map_length[px.b];
             memcpy(p, map_ascii[px.g], map_length[px.g]), p += map_length[px.g];
@@ -48,7 +49,8 @@ const PPM & PPM::write_file_content_ppm3(const char *const file_name) const {
 }
 
 
-const PPM & PPM::write_file_content_ppm6(const char *const file_name) const {
+template <>
+const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_ppm6(const char *const file_name) const {
 
     // TODO: questo è valido solo per MAXVAL=255 ovvero una profondità di 8 bit
     struct __attribute__((__packed__)) rgb3_t { uint8_t buf[3]; }; // wrapper to make a more cache friendly code
