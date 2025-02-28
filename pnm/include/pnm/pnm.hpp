@@ -29,24 +29,6 @@ namespace pnm {
         PGM2, PGM5
     };
 
-    // 3x2 -> vct[3 * (3*2) + 2]
-    struct __attribute__((__packed__)) BN {
-
-        // ((0b0101_0101 >> i)&1).to_s(2)
-        inline uint8_t operator[](uint8_t i) const {
-            assert(i < 8);
-            return (data >> (7 - i)) & 1;
-        }
-
-        // 2x4 -> height x width
-        inline uint8_t operator()(uint8_t r, uint8_t c) const {
-            static constexpr auto cols = 2;
-            return this[0][r * cols + c];
-        }
-
-        uint8_t data;
-    };
-
     template <const uint8_t BIT_DEPTH> struct rgb;
 
     template <>

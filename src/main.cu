@@ -65,9 +65,9 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
     uint16_t tr = blockIdx.y * blockDim.y + threadIdx.y;
     const uint16_t tc = blockIdx.x * blockDim.x + threadIdx.x;
 
-#pragma unroll
+    #pragma unroll
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
-#pragma unroll
+        #pragma unroll
         for (uint16_t c = tc; c < gpu_cols; c += blockDim.x * gridDim.x)
             v[AT(gpu_cols, tr, c)] = calc_mandelbrot<Pixel>(tr, c);
     }
@@ -75,36 +75,12 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 }
 
 #include <iostream>
+#include <pnm/matrix/BitMatrix1D.hpp>
+
 using namespace std;
 int main() {
 
-    BN bn{0b0101'0101};
 
-    // array di byte bn indice di spiazzamento inner_mtx[i%8]
-    // una matrice di array di bit multipli di 8 con del padding
-
-    // row_padding -> desidered_row_length%8
-
-    cout << (int)bn.data << endl;
-    cout << (int)bn[0] << " ";
-    cout << (int)bn[1] << " ";
-    cout << (int)bn[2] << " ";
-    cout << (int)bn[3] << " ";
-    cout << (int)bn[4] << " ";
-    cout << (int)bn[5] << " ";
-    cout << (int)bn[6] << " ";
-    cout << (int)bn[7] << endl;
-
-    cout << "\nas mtx: " << endl;
-    cout << (int)bn(0,0) << " ";
-    cout << (int)bn(0,1) << " ";
-    cout << (int)bn(0,2) << " ";
-    cout << (int)bn(0,3) << endl;
-
-    cout << (int)bn(1,0) << " ";
-    cout << (int)bn(1,1) << " ";
-    cout << (int)bn(1,2) << " ";
-    cout << (int)bn(1,3) << endl;
 
     return 0;
 #if 0

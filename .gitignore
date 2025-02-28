@@ -1,3 +1,5 @@
 .idea/*
 build/*
 pnm/lib/*
+.vscode/*
+cmake-build-debug/*
