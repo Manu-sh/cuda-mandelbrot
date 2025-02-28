@@ -1,6 +1,5 @@
 #pragma once
 #include <cstddef>
-#include <type_traits>
 #include <pnm/common.hpp>
 
 constexpr FORCED(inline) bool is_power_of_2(size_t n) {

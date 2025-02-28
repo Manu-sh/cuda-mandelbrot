@@ -74,7 +74,7 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 }
 
 int main() {
-#if 0
+#if 1
     PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};
 
     x(0,0) = {255, 0,   0};
@@ -104,7 +104,6 @@ int main() {
     return 0;
 #endif
 
-    //using pixel_t = rgb_t;
     //using pixel_t = pnm::grayscale<pnm::BIT_8>;
     using pixel_t = pnm::rgb<pnm::BIT_8>;
     cudaSetDevice(0);
@@ -129,13 +128,13 @@ int main() {
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
     img.write_file_content<pnm::Format::PGM2>("test.ppm2");
     img.write_file_content<pnm::Format::PGM5>("test.ppm5");
-#endif
+#else
 
     PPM<pixel_t> img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
     img.write_file_content<pnm::Format::PPM6>("test.ppm6");
     img.write_file_content<pnm::Format::PPM3>("test.ppm3");
-
+#endif
 
     cudaFree(gpu_vct);
     cudaDeviceReset();

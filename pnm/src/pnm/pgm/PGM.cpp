@@ -17,11 +17,9 @@ const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_f
     uint8_t *const beg = (uint8_t *)(void *)ret.get();
     char *p = (char *)(void *)beg;
 
-    for (uint16_t r = 0; r < m_height; ++r) {
-        for (uint16_t c = 0; c < m_width; ++c) {
-            const auto px = this->operator()(r, c);
-            memcpy(p, map_ascii[px.data], map_length[px.data]), p += map_length[px.data];
-        }
+    for (uint32_t i = 0; i < m_length; ++i) {
+        const pnm::grayscale<pnm::BIT_8> px = this->m_vct[i];
+        memcpy(p, map_ascii[px.data], map_length[px.data]), p += map_length[px.data];
     }
 
     uint8_t *const end = ((uint8_t*)(void *)p);
@@ -37,8 +35,8 @@ template <>
 const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_file_content_ppm5(const char *const file_name) const {
 
     // last iteration has move the pointer by sizeof(rgb3_t) -> 3 bytes, which is okay because both are big at least a multiple of 3 bytes
-    uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);
-    uint8_t *const end = ((uint8_t*)(void *)this->m_vct + this->m_length);
+    const uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);
+    const uint8_t *const end = ((uint8_t*)(void *)(this->m_vct + this->m_length));
     assert((size_t)std::distance(beg, end) <= this->m_length);
     //printf("%p -> len in bytes: %zu, bytes: %zu\n", beg, this->m_length, std::distance(beg, end));
 

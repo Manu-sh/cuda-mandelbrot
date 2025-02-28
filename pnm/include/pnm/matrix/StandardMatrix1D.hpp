@@ -5,7 +5,6 @@
 #include <memory>
 #include <new>
 
-#include <pnm/memalign/utils.hpp>
 #include <pnm/matrix/AbstractMatrix1D.hpp>
 
 template <typename T, typename Allocator = std::allocator<T>>
@@ -36,8 +35,6 @@ class StandardMatrix1D: public AbstractMatrix1D<T> {
             allocator_trait::deallocate(m_allocator, this->m_vct, this->m_length);
             this->m_vct = (T *)(long)(this->m_length = this->m_width = this->m_height = 0);
         }
-
-
 
     protected:
         allocator_type m_allocator;

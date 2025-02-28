@@ -1,16 +1,16 @@
 #pragma once
 #include <cstdint>
 #include <stdexcept>
+#include <pnm/common.hpp>
 
 template <typename T>
 struct AbstractMatrix1D {
 
     public:
-        using value_type = T;
+        using value_type      = T;
         using difference_type = int64_t;
-        using pointer    = T*;
-        using reference  = T&;
-
+        using pointer         = T*;
+        using reference       = T&;
 
     private:
         AbstractMatrix1D(const AbstractMatrix1D &o)             = delete;

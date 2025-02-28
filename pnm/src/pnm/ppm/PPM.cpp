@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <cassert>
 #include <cstring>
-#include <iterator>
 #include <memory>
 #include <new>
 
@@ -15,22 +14,16 @@
 template <>
 const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_ppm3(const char *const file_name) const {
 
+    static const uint8_t pixel_length = strlen("255 255 255 ");
+
     // +1 for null terminator we actually dont use but we need *p
     // to be writeable to make use of std::distance(mem, last)
-#if 0
-    const auto bsize = aligned_bsize_calc<PPM::pixel_type_alignment>(12 * m_length + 1); // 12 -> strlen("255 255 255 ") + 1 for the null terminator we actually dont use
-    alignas(PPM::pixel_type_alignment) char *const mem = new (std::align_val_t(PPM::pixel_type_alignment)) char[bsize];
-    static constexpr auto deleter_fix = [](char *const v) { operator delete[](v, std::align_val_t(PPM::pixel_type_alignment)); };
-    std::unique_ptr<char[], decltype(deleter_fix)> ret{mem, deleter_fix};
-#else
-    const auto bsize = 12 * m_length + 1; // 12 -> strlen("255 255 255 ")
+    const auto bsize = pixel_length * m_length + 1;
     std::unique_ptr<char[]> ret{new char[bsize]};
     char *const mem = ret.get();
-#endif
-
     char *p = mem;
 
-
+    /*
     for (uint16_t r = 0; r < m_height; ++r) {
         for (uint16_t c = 0; c < m_width; ++c) {
             const pnm::rgb<pnm::BIT_8> px = this->operator()(r, c);
@@ -39,6 +32,16 @@ const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_
             memcpy(p, map_ascii[px.g], map_length[px.g]), p += map_length[px.g];
         }
     }
+    */
+
+
+    for (uint32_t i = 0; i < m_length; ++i) {
+        const pnm::rgb<pnm::BIT_8> px = this->m_vct[i];
+        memcpy(p, map_ascii[px.r], map_length[px.r]), p += map_length[px.r];
+        memcpy(p, map_ascii[px.b], map_length[px.b]), p += map_length[px.b];
+        memcpy(p, map_ascii[px.g], map_length[px.g]), p += map_length[px.g];
+    }
+
 
     assert(p <= &mem[bsize-1]);
     assert((size_t)std::distance(mem, p) <= bsize-1);
@@ -52,24 +55,10 @@ const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_
 template <>
 const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_ppm6(const char *const file_name) const {
 
-    // TODO: questo è valido solo per MAXVAL=255 ovvero una profondità di 8 bit
-    struct __attribute__((__packed__)) rgb3_t { uint8_t buf[3]; }; // wrapper to make a more cache friendly code
-    static_assert(sizeof(rgb3_t) == 3, "porco il clero");
+    const auto bsize = sizeof(*m_vct) * m_length;
+    const uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);
+    const uint8_t *const end = ((uint8_t*)(void *)(this->m_vct + m_length));
 
-    const auto bsize = sizeof(rgb3_t) * m_length;
-    std::unique_ptr<uint8_t[]> pa = std::make_unique<uint8_t[]>(bsize);
-    uint8_t *const beg = pa.get();
-
-    rgb3_t *blk_wr = (rgb3_t *)(void *)beg;
-    for (uint16_t r = 0; r < m_height; ++r) {
-        for (uint16_t c = 0; c < m_width; ++c) {
-            const rgb3_t *px = (const rgb3_t *)(void *)&(this[0](r, c));
-            *blk_wr++ = *px;
-        }
-    }
-
-    // last iteration has move the pointer by sizeof(rgb3_t) -> 3 bytes, which is okay because both are big at least a multiple of 3 bytes
-    uint8_t *const end = ((uint8_t*)(void *)blk_wr);
     assert(end <= (beg + bsize));
     assert((size_t)std::distance(beg, end) <= bsize);
     //printf("%p -> len in bytes: %zu, bytes: %zu\n", beg, bsize, std::distance(beg, end));

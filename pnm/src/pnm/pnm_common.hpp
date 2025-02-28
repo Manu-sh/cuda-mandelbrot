@@ -5,7 +5,7 @@
 #include <fstream>
 
 
-static void write_file_content(const char *const file_name, const std::string &hdr, uint8_t *const body_beg, uint8_t *const body_end) {
+static void write_file_content(const char *const file_name, const std::string &hdr, const uint8_t *const body_beg, const uint8_t *const body_end) {
     using std::ios_base;
     std::ofstream fPPM;
     fPPM.exceptions(ios_base::failbit|ios_base::badbit);
