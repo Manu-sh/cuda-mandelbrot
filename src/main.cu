@@ -5,7 +5,7 @@
 
 #include <pnm/ppm/PPM.hpp>
 #include <pnm/pgm/PGM.hpp>
-#include <pnm/ppm/PPM.hpp>
+#include <pnm/pbm/PBM.hpp>
 
 #include <pnm/pnm.hpp>
 #include <pnm/common.hpp>
@@ -80,19 +80,8 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 using namespace std;
 int main() {
 
-    BitMatrix1D bmtx{6, 10}; // wxh
-
-    bool x = 0;
-    for (int r = 0; r < bmtx.height(); ++r) {
-        for (int c = 0; c < bmtx.width(); ++c, x = !x) {
-            bmtx(r, c, x);
-            printf("[h=%d][w=%d] = %d ", r, c, bmtx(r, c));
-            auto *p = bmtx.unwrap();
-        }
-        puts("");
-    }
-
-    return 0;
+    // TODO
+    PBM x{3, 2};
 
 #if 0
     PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};

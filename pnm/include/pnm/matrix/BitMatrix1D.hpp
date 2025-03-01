@@ -5,9 +5,6 @@
 #include <type_traits>
 #include <memory>
 #include <new>
-#include <iostream>
-
-using std::cout, std::endl;
 
 #include <pnm/matrix/AbstractMatrix1D.hpp>
 #include <pnm/matrix/BitArray8.hpp>
@@ -26,10 +23,12 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
 
     public:
         BitMatrix1D(uint16_t width, uint16_t height): AbstractMatrix1D<BitArray8>{width, height} {
+            this->m_length = 0; // m_length shall not used
 
-            //this->m_length = width * height;
-            this->m_length = 0; // TODO:
+            // "Each row is Width bits, packed 8 to a byte": https://netpbm.sourceforge.net/doc/pbm.html
+            // that means a matrix w=1 h=1080 require 1080 bytes whereas one with w=1920 h=1 just 240 bytes
             this->m_byte_height = height;
+
             this->m_byte_width  = ceil_div(width, 8);
             this->m_byte_length = m_byte_width * height; // padded_rows * height
             this->m_vct = (BitArray8 *)allocator_trait::allocate(m_allocator, this->m_byte_length);
@@ -47,25 +46,23 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
             if (byte_idx >= m_byte_length || r >= m_height || c >= m_width)
                 throw std::runtime_error("index out of bound");
 
-            const BitArray8 &b = m_vct[byte_idx];
-            return b[c&7]; // b[c%8];
+            const BitArray8 &bit_a = m_vct[byte_idx];
+            return bit_a[c&7]; // b[c%8];
         }
 
         void operator()(uint16_t r, uint16_t c, bool value) {
 
-            const uint32_t byte_idx = r * m_byte_width + (c >> 3); //  r * m_byte_width + (c/8)
-
+            const uint32_t byte_idx = r * m_byte_width + (c >> 3);
             if (byte_idx >= m_byte_length || r >= m_height || c >= m_width)
                 throw std::runtime_error("index out of bound");
 
-            BitArray8 &b = m_vct[byte_idx]; // cout <<"m_vct["<<byte_idx<<"] -> b[" << c%8 << "] = " << (int)value << endl;
-            return b(c&7, value);           // b(c%8, value) -> b(c - ((c >> 3) << 3), value) -> b(c & 7, value)
+            BitArray8 &bit_a = m_vct[byte_idx];
+            return (void)bit_a(c&7, value);     // bit(c%8, value) -> bit(c - ((c >> 3) << 3), value) -> bit(c & 7, value)
         }
 
     protected:
         allocator_type m_allocator;
-
-        uint32_t m_byte_height;
-        uint32_t m_byte_width;
         uint32_t m_byte_length;
+        uint16_t m_byte_height;
+        uint16_t m_byte_width;
 };
