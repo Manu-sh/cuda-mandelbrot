@@ -85,7 +85,8 @@ int main() {
     bool x = 0;
     for (int r = 0; r < bmtx.height(); ++r) {
         for (int c = 0; c < bmtx.width(); ++c, x = !x) {
-            printf("[h=%d][w=%d] = %d ", r, c, bmtx(r, c, x));
+            bmtx(r, c, x);
+            printf("[h=%d][w=%d] = %d ", r, c, bmtx(r, c));
             auto *p = bmtx.unwrap();
         }
         puts("");
