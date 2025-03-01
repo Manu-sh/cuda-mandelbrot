@@ -20,3 +20,13 @@ constexpr FORCED(inline) auto aligned_bsize_calc(size_t desired_bsize) {
     static_assert(ALIGNMENT >= alignof(std::max_align_t), "some implementation require this to be >= alignof(std::max_align_t) however by the standard there are is no minimal"); // suggested for portability
     return ((desired_bsize + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
 }
+
+
+/*
+
+// ceil $num up to the next multiple value of $to -> ceil_up(11, 10) -> 20
+static constexpr FORCED(inline) uint16_t ceil_up(uint16_t num, uint8_t to) {
+    return num == 0 ? to : ((num + to - 1) / to) * to;
+}
+
+*/

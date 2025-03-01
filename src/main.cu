@@ -80,9 +80,19 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 using namespace std;
 int main() {
 
+    BitMatrix1D bmtx{6, 10}; // wxh
 
+    bool x = 0;
+    for (int r = 0; r < bmtx.height(); ++r) {
+        for (int c = 0; c < bmtx.width(); ++c, x = !x) {
+            printf("[h=%d][w=%d] = %d ", r, c, bmtx(r, c, x));
+            auto *p = bmtx.unwrap();
+        }
+        puts("");
+    }
 
     return 0;
+
 #if 0
     PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};
 

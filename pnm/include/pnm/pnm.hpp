@@ -7,18 +7,6 @@
 
 namespace pnm {
 
-    // return the number of bit a row should have to be aligned at 8 bit (1 byte)
-    static constexpr FORCED(inline) uint16_t row_bit_length_calc(uint16_t row_bit_len) {
-        constexpr uint8_t ALIGNMENT = 8; // 8 bit
-        return ((row_bit_len + ALIGNMENT - 1) / ALIGNMENT) * ALIGNMENT;
-    }
-
-    static constexpr FORCED(inline) uint8_t row_byte_padding(uint16_t row_bit_length) {
-        int should_be_bits = row_bit_length_calc(row_bit_length);
-        return (should_be_bits - row_bit_length) / 8; // 8/ -> the size returned is how much BYTE padding we need on this row
-    }
-
-
     enum: uint8_t {
         BIT_8  = 8,
         BIT_16 = 16,

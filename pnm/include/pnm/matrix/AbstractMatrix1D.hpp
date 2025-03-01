@@ -34,7 +34,7 @@ struct AbstractMatrix1D {
         FORCED(inline) const T & operator()(uint16_t r, uint16_t c) const noexcept { return m_vct[r * m_width + c]; }
 
         FORCED(inline) decltype(auto) at(uint16_t r, uint16_t c) const {
-            constexpr AbstractMatrix1D<T> *const self = (AbstractMatrix1D<T>*)this; // avoid infinite recursion
+            AbstractMatrix1D<T> *const self = (AbstractMatrix1D<T>*)this; // avoid infinite recursion
             if constexpr (sizeof(T) <= sizeof(long))
                 return (T)self->at(r, c);
             else
@@ -42,7 +42,7 @@ struct AbstractMatrix1D {
         }
 
         FORCED(inline) const T * unwrap() const {
-            constexpr AbstractMatrix1D<T> *const self = (AbstractMatrix1D<T>*)this; // avoid infinite recursion
+            AbstractMatrix1D<T> *const self = (AbstractMatrix1D<T>*)this; // avoid infinite recursion
             return (const T *)self->unwrap();
         }
 
