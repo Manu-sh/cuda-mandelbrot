@@ -81,36 +81,24 @@ using namespace std;
 int main() {
 
     // TODO
-    PBM bn{3, 2};
+    PBM<pnm::monochrome_t> x{3, 2};
 
-#if 1
-    PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};
+    x(0,0, {255, 0, 0}  );
+    x(0,1, {0,   255, 0});
+    x(0,2, {0,   255, 0});
 
-    x(0,0) = {255, 0,   0};
-    x(0,1) = {0,   255, 0};
-    x(0,2) = {0,   0,   255};
+    x(1,0, {255, 255, 0});
+    x(1,1, {255, 255, 255});
+    x(1,2, {0,   0,   0});
 
-    x(1,0) = {255, 255, 0};
-    x(1,1) = {255, 255, 255};
-    x(1,2) = {0,   0,   0};
+    x.write_file_content<pnm::Format::PBM4>("color.pbm4");
+/*
 
-    x.write_file_content<pnm::Format::PPM3>("color.ppm3");
     x.write_file_content<pnm::Format::PPM6>("color.ppm6");
+*/
     return 0;
+#if 1
 
-    PGM<pnm::grayscale<pnm::BIT_8>> pgm{3, 2};
-
-    pgm(0,0) = {255, 0,   0};
-    pgm(0,1) = {0,   255, 0};
-    pgm(0,2) = {0,   0,   255};
-
-    pgm(1,0) = {255, 255, 0};
-    pgm(1,1) = {255, 255, 255};
-    pgm(1,2) = {0,   0,   0};
-
-    pgm.write_file_content<pnm::Format::PGM2>("test.pgm2");
-    pgm.write_file_content<pnm::Format::PGM5>("test.pgm5");
-    return 0;
 #endif
 
     //using pixel_t = pnm::grayscale<pnm::BIT_8>;

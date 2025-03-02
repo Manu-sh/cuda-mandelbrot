@@ -15,7 +15,8 @@ namespace pnm {
 
     enum class Format: uint8_t {
         PPM3, PPM6,
-        PGM2, PGM5
+        PGM2, PGM5,
+        PBM4
     };
 
     template <const uint8_t BIT_DEPTH> struct rgb;
@@ -55,13 +56,17 @@ namespace pnm {
 
     struct __attribute__((__packed__)) monochrome_t: grayscale<BIT_8> {
 
-        monochrome_t() = default;
+        enum: uint8_t { // PBM use 0 for white and 1 for black
+            WHITE, BLACK
+        };
 
+        monochrome_t() = default;
         inline constexpr monochrome_t(uint8_t r, uint8_t g, uint8_t b): grayscale<BIT_8>{r, g, b}  {
-            this->data = data <= 128 ? 0 : 1; // convert from grayscale to monochromatic
+            this->data = data <= 128 ? BLACK : WHITE; // convert from grayscale to monochromatic
         }
 
         inline constexpr monochrome_t(const rgb<BIT_8> &px): monochrome_t{px.r, px.g, px.b} {}
+
     };
 
 }

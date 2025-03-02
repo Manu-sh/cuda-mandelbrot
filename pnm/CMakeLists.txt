@@ -16,6 +16,7 @@ set(INC_PRIVATE_PATH  ${PROJECT_SOURCE_DIR}/src)
 add_library(${PROJECT_NAME} STATIC
         ${SRC_PATH}/pnm/ppm/PPM.cpp
         ${SRC_PATH}/pnm/pgm/PGM.cpp
+        ${SRC_PATH}/pnm/pbm/PBM.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${INC_PATH})

@@ -22,13 +22,13 @@ struct PPM: public StandardMatrix1D<RGB> {
     template <pnm::Format format>
     constexpr FORCED(inline) const PPM & write_file_content(const char *const file_name) const {
         if constexpr(format == pnm::Format::PPM3)
-            return write_file_content_ppm3(file_name);
+            return write_file_content_pnm3(file_name);
 
-        return write_file_content_ppm6(file_name);
+        return write_file_content_pnm6(file_name);
     }
 
     private:
-        const PPM & write_file_content_ppm3(const char *const file_name) const;
-        const PPM & write_file_content_ppm6(const char *const file_name) const;
+        const PPM & write_file_content_pnm3(const char *const file_name) const;
+        const PPM & write_file_content_pnm6(const char *const file_name) const;
 };
 

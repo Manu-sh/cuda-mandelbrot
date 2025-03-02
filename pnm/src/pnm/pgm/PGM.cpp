@@ -10,7 +10,7 @@
 #include <new>
 
 template <>
-const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_file_content_ppm2(const char *const file_name) const {
+const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_file_content_pnm2(const char *const file_name) const {
 
     const auto bsize = 4 * m_length + 1; // 4 -> strlen("255 ") + 1 for the null terminator we actually dont use
     std::unique_ptr<uint8_t[]> mem{new uint8_t[bsize]};
@@ -32,7 +32,7 @@ const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_f
 }
 
 template <>
-const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_file_content_ppm5(const char *const file_name) const {
+const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_file_content_pnm5(const char *const file_name) const {
 
     // last iteration has move the pointer by sizeof(rgb3_t) -> 3 bytes, which is okay because both are big at least a multiple of 3 bytes
     const uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);
