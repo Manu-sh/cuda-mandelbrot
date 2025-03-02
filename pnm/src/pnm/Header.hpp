@@ -86,4 +86,11 @@ namespace pnm {
     };
 
 
+    template<>
+    struct Header<pnm::Format::PBM1, pnm::BIT_2>: AbstractHeader<pnm::Format::PBM1, pnm::BIT_2> {
+        Header(uint16_t width, uint16_t height)
+                : AbstractHeader<pnm::Format::PBM1, pnm::BIT_2>{width, height, "P1"} {}
+    };
+
+
 }

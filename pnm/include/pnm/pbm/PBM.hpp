@@ -5,7 +5,6 @@
 #include <pnm/common.hpp>
 #include <pnm/matrix/BitMatrix1D.hpp>
 
-// TODO: at the time we write we invert the bit?
 template <typename MonoChrome, typename Enable = std::enable_if_t<std::is_same_v<MonoChrome, pnm::monochrome_t>>>
 struct PBM: BitMatrix1D<> {
 
@@ -18,13 +17,14 @@ struct PBM: BitMatrix1D<> {
 
     template <pnm::Format format>
     constexpr FORCED(inline) const PBM & write_file_content(const char *const file_name) const {
-        //if constexpr(format == pnm::Format::PGM2)
-        //    return write_file_content_pnm2(file_name), *this;
+        if constexpr(format == pnm::Format::PBM4)
+            return write_file_content_pnm4(file_name), *this;
 
         return write_file_content_pnm1(file_name), *this;
     }
 
     private:
         const PBM & write_file_content_pnm1(const char *const file_name) const;
+        const PBM & write_file_content_pnm4(const char *const file_name) const;
 
 };

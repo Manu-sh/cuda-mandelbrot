@@ -55,7 +55,7 @@ x(1,1, {255, 255, 255});
 x(1,2, {0,   0,   0});
 
 x.write_file_content<pnm::Format::PBM4>("color.pbm4");
-
+x.write_file_content<pnm::Format::PBM1>("color.pbm1");
 
 
 PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};

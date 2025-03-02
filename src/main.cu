@@ -74,32 +74,10 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 
 }
 
-#include <iostream>
-#include <pnm/matrix/BitMatrix1D.hpp>
 
 using namespace std;
 int main() {
 
-    // TODO
-    PBM<pnm::monochrome_t> x{3, 2};
-
-    x(0,0, {255, 0, 0}  );
-    x(0,1, {0,   255, 0});
-    x(0,2, {0,   255, 0});
-
-    x(1,0, {255, 255, 0});
-    x(1,1, {255, 255, 255});
-    x(1,2, {0,   0,   0});
-
-    x.write_file_content<pnm::Format::PBM4>("color.pbm4");
-/*
-
-    x.write_file_content<pnm::Format::PPM6>("color.ppm6");
-*/
-    return 0;
-#if 1
-
-#endif
 
     //using pixel_t = pnm::grayscale<pnm::BIT_8>;
     using pixel_t = pnm::rgb<pnm::BIT_8>;

@@ -16,7 +16,7 @@ namespace pnm {
     enum class Format: uint8_t {
         PPM3, PPM6,
         PGM2, PGM5,
-        PBM4
+        PBM4, PBM1
     };
 
     template <const uint8_t BIT_DEPTH> struct rgb;
