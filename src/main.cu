@@ -77,6 +77,15 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 using namespace std;
 int main() {
 
+    PBM<pnm::monochrome_t> x{1910, 1070};
+    bool color = pnm::monochrome_t::BLACK;
+
+    for (int h = 0; h < x.height(); ++h, color = !color)
+        for (int w = 0; w < x.width(); ++w, color = !color)
+            x(h, w, color);
+
+    x.write_file_content<pnm::Format::PBM4>("color.pbm4");
+    return 0;
 
     //using pixel_t = pnm::grayscale<pnm::BIT_8>;
     using pixel_t = pnm::rgb<pnm::BIT_8>;

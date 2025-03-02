@@ -29,6 +29,8 @@ const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm1(c
 template <>
 const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(const char *const file_name) const {
 
+    static_assert(sizeof(BitArray8) == 1, "ooops");
+
     // 2 -> strlen("0 ") + 1 for the null terminator we actually dont use
     const auto bsize = 2 * (m_width * m_height) + 1;
 
@@ -38,14 +40,15 @@ const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(c
     const uint16_t chunked_width = m_width / 8; // contiguous bytes
     const uint16_t remaind_width = m_width % 8; // number of bits remaining to read before encountering the padding
 
-    for (uint32_t i = 0, c = 0; i < m_byte_length; i += m_byte_width, c = 0) {
+    for (uint32_t i = 0, w_byte = 0; i < m_byte_length; i += m_byte_width) {
+
+        const BitArray8 *pr = this->m_vct + i;
 
         // for each element of the current row
+        // copy the line fetching by byte until there is padding
+        for (w_byte = 0; w_byte < chunked_width; ++w_byte, ++pr) {
 
-        // copy the line fetching by byte until there is no padding
-        for (; c < chunked_width; ++c) {
-            const BitArray8 bit = this->m_vct[i+c]; // this skip many checks
-            assert(i+c < m_byte_length);
+            const BitArray8 bit = *pr; // this skip many checks
 
             *p++ = (bit[0] + '0'), *p++ = ' '; // convert o ascii every bit
             *p++ = (bit[1] + '0'), *p++ = ' ';
@@ -58,15 +61,15 @@ const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(c
         }
 
         if (!remaind_width) continue;
-
-        assert(i+c < m_byte_length);
+        assert(pr < m_vct+m_byte_length);
 
         // read remaining bits and stop before padding
-        const BitArray8 bit = this->m_vct[i+c];
+        const BitArray8 bit = *pr;
         for (uint8_t b = 0; b < remaind_width; ++b) {
             *p++ = (bit[b] + '0');
             *p++ = ' ';
         }
+
     }
 
     const uint8_t *const beg = mem.get();
