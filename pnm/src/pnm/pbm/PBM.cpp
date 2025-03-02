@@ -38,12 +38,12 @@ const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(c
     const auto chunked_width = m_width / 8; // contiguos bytes
     const auto remaind_width = m_width % 8; // number of bits remaining to read before encountering the padding
 
-    for (uint16_t i = 0, c = 0; i < m_byte_length; i += m_byte_width, c = 0) {
+    for (uint32_t i = 0, c = 0; i < m_byte_length; i += m_byte_width, c = 0) {
 
         // copy the line fetching by byte until there is no padding
         for (; c < chunked_width; ++c) {
 
-            //cout << "byte[" << i << "]" << endl;
+            //cout << "byte[" << i << "]" << " of p[" << bsize << "]" << endl;
             const BitArray8 bit = this->m_vct[i]; // this skip many checks
             #pragma GCC unroll 8
             for (uint8_t i = 0; i < 8; ++i) {

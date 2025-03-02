@@ -44,6 +44,16 @@ Learning resources
 - https://tschmidt23.github.io/cse599i/CSE%20599%20I%20Accelerated%20Computing%20-%20Programming%20GPUs%20Lecture%2017.pdf
 
 ```cpp
+PBM<pnm::monochrome_t> x{1920, 1080};
+bool color = pnm::monochrome_t::BLACK;
+
+for (int h = 0; h < x.height(); ++h, color = !color)
+    for (int w = 0; w < x.width(); ++w, color = !color)
+        x(h, w, color);
+
+x.write_file_content<pnm::Format::PBM1>("color.pbm1");
+x.write_file_content<pnm::Format::PBM4>("color.pbm4");
+
 PBM<pnm::monochrome_t> x{3, 2};
 
 x(0,0, {255, 0, 0}  );
