@@ -9,11 +9,11 @@
 #include <cstring>
 #include <memory>
 #include <new>
-#include <utility>
-
 
 template <>
 const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_pnm3(const char *const file_name) const {
+
+    if (!m_length) return *this;
 
     // +1 for null terminator we actually dont use
     const auto bsize = 12 * m_length + 1; // 12 -> strlen("255 255 255 ")
@@ -40,6 +40,8 @@ const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_
 
 template <>
 const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_pnm6(const char *const file_name) const {
+
+    if (!m_length) return *this;
 
     const auto bsize = sizeof(*m_vct) * m_length;
     const uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);

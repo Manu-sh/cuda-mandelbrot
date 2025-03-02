@@ -1,8 +1,6 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <string_view>
-#include <fstream>
 
 #include <pnm/pnm.hpp>
 #include <pnm/matrix/StandardMatrix1D.hpp>
