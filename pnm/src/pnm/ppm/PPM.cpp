@@ -24,8 +24,8 @@ const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_
     for (uint32_t i = 0; i < m_length; ++i) {
         const pnm::rgb<pnm::BIT_8> px = this->m_vct[i];
         memcpy(p, map_ascii[px.r], map_length[px.r]), p += map_length[px.r];
-        memcpy(p, map_ascii[px.b], map_length[px.b]), p += map_length[px.b];
         memcpy(p, map_ascii[px.g], map_length[px.g]), p += map_length[px.g];
+        memcpy(p, map_ascii[px.b], map_length[px.b]), p += map_length[px.b];
     }
 
     const uint8_t *const beg = mem.get();
@@ -37,7 +37,6 @@ const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_
     auto header = pnm::Header<pnm::Format::PPM3, pnm::BIT_8>{m_width, m_height};
     return ::write_file_content(file_name, header, beg, p), *this;
 }
-
 
 template <>
 const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_ppm6(const char *const file_name) const {

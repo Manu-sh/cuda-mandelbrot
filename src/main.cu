@@ -81,9 +81,9 @@ using namespace std;
 int main() {
 
     // TODO
-    PBM x{3, 2};
+    PBM bn{3, 2};
 
-#if 0
+#if 1
     PPM<pnm::rgb<pnm::BIT_8>> x{3, 2};
 
     x(0,0) = {255, 0,   0};

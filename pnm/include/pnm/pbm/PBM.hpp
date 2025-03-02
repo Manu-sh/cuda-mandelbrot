@@ -7,9 +7,6 @@
 
 struct PBM: BitMatrix1D<> {
 
-    //static_assert(sizeof(GrayScale{}.data) == 1, "only 8 bit depth is supported, the size of each channel MUST be exactly 1 byte");
-
     using BitMatrix1D<>::BitMatrix1D;
-    //using pixel_type = GrayScale;
 
 };
