@@ -24,5 +24,4 @@ struct PGM: StandardMatrix1D<GrayScale> {
     private:
         const PGM & write_file_content_pnm2(const char *const file_name) const;
         const PGM & write_file_content_pnm5(const char *const file_name) const;
-
 };

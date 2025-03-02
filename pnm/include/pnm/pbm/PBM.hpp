@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <type_traits>
 
 #include <pnm/pnm.hpp>
@@ -26,5 +27,4 @@ struct PBM: BitMatrix1D<> {
     private:
         const PBM & write_file_content_pnm1(const char *const file_name) const;
         const PBM & write_file_content_pnm4(const char *const file_name) const;
-
 };

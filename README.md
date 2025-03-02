@@ -56,7 +56,7 @@ x.write_file_content<pnm::Format::PBM4>("color.pbm4");
 
 PBM<pnm::monochrome_t> x{3, 2};
 
-x(0,0, {255, 0, 0}  );
+x(0,0, {255, 0,   0});
 x(0,1, {0,   255, 0});
 x(0,2, {0,   255, 0});
 

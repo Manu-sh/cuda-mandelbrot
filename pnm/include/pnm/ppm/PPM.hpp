@@ -1,10 +1,9 @@
 #pragma once
-#include <cstdint>
-#include <string>
+#include <type_traits>
 
 #include <pnm/pnm.hpp>
-#include <pnm/matrix/StandardMatrix1D.hpp>
 #include <pnm/common.hpp>
+#include <pnm/matrix/StandardMatrix1D.hpp>
 
 // https://en.wikipedia.org/wiki/Netpbm
 
@@ -29,4 +28,3 @@ struct PPM: public StandardMatrix1D<RGB> {
         const PPM & write_file_content_pnm3(const char *const file_name) const;
         const PPM & write_file_content_pnm6(const char *const file_name) const;
 };
-
