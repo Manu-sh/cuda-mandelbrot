@@ -35,8 +35,8 @@ const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(c
     std::unique_ptr<uint8_t[]> mem{new uint8_t[bsize]};
     uint8_t *p = mem.get();
 
-    const auto chunked_width = m_width / 8; // contiguos bytes
-    const auto remaind_width = m_width % 8; // number of bits remaining to read before encountering the padding
+    const uint16_t chunked_width = m_width / 8; // contiguos bytes
+    const uint16_t remaind_width = m_width % 8; // number of bits remaining to read before encountering the padding
 
     for (uint32_t i = 0, c = 0; i < m_byte_length; i += m_byte_width, c = 0) {
 

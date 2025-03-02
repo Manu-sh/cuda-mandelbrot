@@ -65,31 +65,17 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
     uint16_t tr = blockIdx.y * blockDim.y + threadIdx.y;
     const uint16_t tc = blockIdx.x * blockDim.x + threadIdx.x;
 
-    #pragma unroll
+#pragma unroll
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
-        #pragma unroll
+#pragma unroll
         for (uint16_t c = tc; c < gpu_cols; c += blockDim.x * gridDim.x)
             v[AT(gpu_cols, tr, c)] = calc_mandelbrot<Pixel>(tr, c);
     }
 
 }
 
-#include <iostream>
-#include "../pnm/include/pnm/pnm.hpp"
-
 using namespace std;
 int main() {
-
-    PBM<pnm::monochrome_t> x{1920, 1080};
-    bool color = pnm::monochrome_t::BLACK;
-
-    for (int h = 0; h < x.height(); ++h, color = !color)
-        for (int w = 0; w < x.width(); ++w, color = !color)
-            x(h, w, color);
-
-    //x.write_file_content<pnm::Format::PBM1>("color.pbm1");
-    x.write_file_content<pnm::Format::PBM4>("color.pbm4");
-    return 0;
 
     //using pixel_t = pnm::grayscale<pnm::BIT_8>;
     using pixel_t = pnm::rgb<pnm::BIT_8>;
@@ -116,11 +102,10 @@ int main() {
     img.write_file_content<pnm::Format::PGM2>("test.ppm2");
     img.write_file_content<pnm::Format::PGM5>("test.ppm5");
 #else
-
     PPM<pixel_t> img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
     img.write_file_content<pnm::Format::PPM6>("test.ppm6");
-    img.write_file_content<pnm::Format::PPM3>("test.ppm3");
+    //img.write_file_content<pnm::Format::PPM3>("test.ppm3");
 #endif
 
     cudaFree(gpu_vct);
