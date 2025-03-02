@@ -29,37 +29,42 @@ const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm1(c
 template <>
 const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(const char *const file_name) const {
 
-    const auto len = m_width * m_height;
-    const auto bsize = 2 * len + 1; // 4 -> strlen("0 ") + 1 for the null terminator we actually dont use
+    // 2 -> strlen("0 ") + 1 for the null terminator we actually dont use
+    const auto bsize = 2 * (m_width * m_height) + 1;
 
     std::unique_ptr<uint8_t[]> mem{new uint8_t[bsize]};
     uint8_t *p = mem.get();
 
-    const uint16_t chunked_width = m_width / 8; // contiguos bytes
+    const uint16_t chunked_width = m_width / 8; // contiguous bytes
     const uint16_t remaind_width = m_width % 8; // number of bits remaining to read before encountering the padding
 
     for (uint32_t i = 0, c = 0; i < m_byte_length; i += m_byte_width, c = 0) {
 
+        // for each element of the current row
+
         // copy the line fetching by byte until there is no padding
         for (; c < chunked_width; ++c) {
+            const BitArray8 bit = this->m_vct[i+c]; // this skip many checks
+            assert(i+c < m_byte_length);
 
-            //cout << "byte[" << i << "]" << " of p[" << bsize << "]" << endl;
-            const BitArray8 bit = this->m_vct[i]; // this skip many checks
-            #pragma GCC unroll 8
-            for (uint8_t i = 0; i < 8; ++i) {
-                *p++ = (bit[i] + '0'); // convert o ascii
-                *p++ = ' ';
-            }
+            *p++ = (bit[0] + '0'), *p++ = ' '; // convert o ascii every bit
+            *p++ = (bit[1] + '0'), *p++ = ' ';
+            *p++ = (bit[2] + '0'), *p++ = ' ';
+            *p++ = (bit[3] + '0'), *p++ = ' ';
+            *p++ = (bit[4] + '0'), *p++ = ' ';
+            *p++ = (bit[5] + '0'), *p++ = ' ';
+            *p++ = (bit[6] + '0'), *p++ = ' ';
+            *p++ = (bit[7] + '0'), *p++ = ' ';
         }
 
         if (!remaind_width) continue;
 
-        //cout << "byte[" << i << "]" << "-> (" << remaind_width << ") bits" << endl;
+        assert(i+c < m_byte_length);
 
         // read remaining bits and stop before padding
-        const BitArray8 bit = this->m_vct[i];
-        for (; c < remaind_width; ++c) {
-            *p++ = (bit[c] + '0');
+        const BitArray8 bit = this->m_vct[i+c];
+        for (uint8_t b = 0; b < remaind_width; ++b) {
+            *p++ = (bit[b] + '0');
             *p++ = ' ';
         }
     }

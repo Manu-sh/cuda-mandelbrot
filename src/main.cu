@@ -77,6 +77,7 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 using namespace std;
 int main() {
 
+
     //using pixel_t = pnm::grayscale<pnm::BIT_8>;
     using pixel_t = pnm::rgb<pnm::BIT_8>;
     cudaSetDevice(0);
