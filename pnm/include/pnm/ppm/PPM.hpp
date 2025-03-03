@@ -7,7 +7,7 @@
 
 // https://en.wikipedia.org/wiki/Netpbm
 
-template <typename RGB, typename Enable = std::enable_if_t<std::is_same_v<RGB, pnm::rgb<pnm::BIT_8>> ||std::is_same_v<RGB, pnm::rgb<pnm::BIT_16>>>>
+template <typename RGB, typename Enable = std::enable_if_t<std::is_same_v<RGB, pnm::rgb<pnm::BIT_8>>>>
 struct PPM: public StandardMatrix1D<RGB> {
 
     static_assert(sizeof(RGB{}.r) + sizeof(RGB{}.g) + sizeof(RGB{}.b) == 3, "only 8 bit depth is supported, the size of each channel MUST be exactly 1 byte");

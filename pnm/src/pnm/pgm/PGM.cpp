@@ -38,11 +38,12 @@ const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_f
 
     if (!m_length) return *this;
 
-    // last iteration has move the pointer by sizeof(rgb3_t) -> 3 bytes, which is okay because both are big at least a multiple of 3 bytes
+    const auto bsize = sizeof(*m_vct) * m_length;
     const uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);
-    const uint8_t *const end = ((uint8_t*)(void *)(this->m_vct + this->m_length));
-    assert((size_t)std::distance(beg, end) <= this->m_length);
-    //printf("%p -> len in bytes: %zu, bytes: %zu\n", beg, this->m_length, std::distance(beg, end));
+    const uint8_t *const end = ((uint8_t*)(void *)(this->m_vct + m_length));
+
+    assert(end <= (beg + bsize));
+    assert((size_t)std::distance(beg, end) <= bsize);
 
     auto header = pnm::Header<pnm::Format::PGM5, pnm::BIT_8>{m_width, m_height};
     return ::write_file_content(file_name, header, beg, end), *this;
