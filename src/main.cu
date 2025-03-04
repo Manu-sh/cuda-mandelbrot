@@ -9,27 +9,19 @@
 
 #include <pnm/pnm.hpp>
 #include <pnm/common.hpp>
-#include <pnm/memalign/utils.hpp>
 
 // https://stackoverflow.com/questions/2151084/map-a-2d-array-onto-a-1d-array
 constexpr FORCED(inline) uint32_t AT(uint16_t cols, uint16_t r, uint16_t c) { // cols = width = x_size
     return r * cols + c;
 }
 
-using namespace pnm;
 
 inline constexpr uint16_t cols = 1920, rows = 1080;
-//inline constexpr uint16_t cols = 4096, rows = 3112;
-static_assert(
-        ((rows-1) * cols) <= 0xff'ff'ff,
-        "ATfast(cols, r_idx, c_idx) -> __umul24(r_idx, cols) does not support more than 24 bit"
-);
-
+static_assert(((rows-1) * cols) <= 0xff'ff'ff, "pls stay under 24 bit");
 
 // https://stackoverflow.com/questions/16119923/using-constants-with-cuda
 __device__ inline constexpr uint16_t ixsize = rows, gpu_rows = rows, iysize = cols, gpu_cols = cols, max_i = 1000;
 __device__ inline constexpr float cxmin = -2.5f, cxmax = 2.5f, cymin = -2.5f, cymax = 2.5f;
-
 
 template <typename Pixel>
 __device__ Pixel calc_mandelbrot(uint16_t ix, uint16_t iy) {
@@ -65,9 +57,9 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
     uint16_t tr = blockIdx.y * blockDim.y + threadIdx.y;
     const uint16_t tc = blockIdx.x * blockDim.x + threadIdx.x;
 
-#pragma unroll
+    #pragma unroll
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
-#pragma unroll
+        #pragma unroll
         for (uint16_t c = tc; c < gpu_cols; c += blockDim.x * gridDim.x)
             v[AT(gpu_cols, tr, c)] = calc_mandelbrot<Pixel>(tr, c);
     }
@@ -104,8 +96,8 @@ int main() {
 #else
     PPM<pixel_t> img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
+    img.write_file_content<pnm::Format::PPM3>("test.ppm3");
     img.write_file_content<pnm::Format::PPM6>("test.ppm6");
-    //img.write_file_content<pnm::Format::PPM3>("test.ppm3");
 #endif
 
     cudaFree(gpu_vct);

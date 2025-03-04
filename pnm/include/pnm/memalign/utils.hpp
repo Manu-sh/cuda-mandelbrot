@@ -1,3 +1,5 @@
+/*
+
 #pragma once
 #include <cstddef>
 #include <pnm/common.hpp>
@@ -22,7 +24,6 @@ constexpr FORCED(inline) auto aligned_bsize_calc(size_t desired_bsize) {
 }
 
 
-/*
 
 // ceil $num up to the next multiple value of $to -> ceil_up(11, 10) -> 20
 static constexpr FORCED(inline) uint16_t ceil_up(uint16_t num, uint8_t to) {
