@@ -1,6 +1,8 @@
 #include <cassert>
 #include <cstdint>
+
 #include <cuda_runtime.h>
+#include <curand_kernel.h>
 #include <thrust/complex.h>
 
 #include <pnm/ppm/PPM.hpp>
@@ -22,6 +24,24 @@ static_assert(((rows-1) * cols) <= 0xff'ff'ff, "pls stay under 24 bit");
 // https://stackoverflow.com/questions/16119923/using-constants-with-cuda
 __device__ inline constexpr uint16_t ixsize = rows, gpu_rows = rows, iysize = cols, gpu_cols = cols, max_i = 1000;
 __device__ inline constexpr float cxmin = -2.5f, cxmax = 2.5f, cymin = -2.5f, cymax = 2.5f;
+
+
+template <typename Pixel>
+__device__ static Pixel random_primary(int seed) {
+
+    const static Pixel rgb_primary[] = {
+        {255, 0, 0},
+        {0, 255, 0},
+        {0, 0, 255},
+        {255, 255, 255},
+        {0, 0, 0},
+    };
+
+    curandState state;
+    curand_init(seed, 0, 0, &state);
+    return rgb_primary[curand(&state) % std::size(rgb_primary)];
+}
+
 
 template <typename Pixel>
 __device__ Pixel calc_mandelbrot(uint16_t ix, uint16_t iy) {
@@ -47,7 +67,8 @@ __device__ Pixel calc_mandelbrot(uint16_t ix, uint16_t iy) {
     //const uint8_t col = min(255, max(0, (unsigned)(z.real() * 255))); // -> different result
     //const uint8_t col = (uint8_t)lround(z.real() * 1);                // ok
     const uint8_t col = (uint8_t)__float2int_rn(z.real() * 1);          // same of calling std::lround(float) but cuda specific
-    return (i == max_i) ? Pixel{0,0,0} : Pixel{col,col,col};
+    //return (i == max_i) ? Pixel{0,0,0} : Pixel{col,col,col};
+    return (i == max_i) ? Pixel{0,0,0} : random_primary<Pixel>(col);
 }
 
 
