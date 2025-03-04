@@ -117,7 +117,7 @@ int main() {
 #else
     PPM<pixel_t> img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
-    img.write_file_content<pnm::Format::PPM3>("test.ppm3");
+    //img.write_file_content<pnm::Format::PPM3>("test.ppm3");
     img.write_file_content<pnm::Format::PPM6>("test.ppm6");
 #endif
 
