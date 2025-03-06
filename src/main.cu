@@ -29,7 +29,7 @@ __device__ inline constexpr float cxmin = -2.5f, cxmax = 2.5f, cymin = -2.5f, cy
 template <typename Pixel>
 __device__ static Pixel random_primary(int seed) {
 
-    const static Pixel rgb_primary[] = {
+    static const Pixel rgb_primary[] = {
         {255, 0, 0},
         {0, 255, 0},
         {0, 0, 255},
