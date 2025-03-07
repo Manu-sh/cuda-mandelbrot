@@ -11,8 +11,7 @@
 
 // technically for ascii format: " No line SHOULD be longer than 70 characters."
 // but i dont care because it doesnt make any sense and the format is parsed correctly
-template <>
-const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(const char *const file_name) const {
+const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *const file_name) const {
 
     static_assert(sizeof(BitArray8) == 1, "ooops");
 
@@ -87,8 +86,7 @@ const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm4(c
     return ::write_file_content(file_name, header, beg, end), *this;
 }
 
-template <>
-const PBM<pnm::monochrome_t> & PBM<pnm::monochrome_t>::write_file_content_pnm1(const char *const file_name) const {
+const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_binary(const char *const file_name) const {
 
     if (!(m_width && m_height))
         return *this;

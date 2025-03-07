@@ -5,12 +5,15 @@
 
 #include <pnm/common.hpp>
 
+template <typename Pixel> struct PNM;
+
 namespace pnm {
+
 
     enum: uint8_t {
         BIT_2  = 2,
         BIT_8  = 8,
-        BIT_16 = 16,
+        //BIT_16 = 16,
     };
 
     enum class Format: uint8_t {
@@ -59,7 +62,7 @@ namespace pnm {
     static_assert(sizeof(monochrome_t) == 1, "monochrome_t must be exactly 1 byte");
     static_assert(sizeof(monochrome_t{}.data), "the size of the monochrome_t channel MUST be exactly 1 byte");
 
-#if 1
+    #if 0
         template <>
         struct __attribute__((__packed__)) rgb<BIT_16> {
             uint16_t r;

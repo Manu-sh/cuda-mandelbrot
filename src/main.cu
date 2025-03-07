@@ -109,17 +109,10 @@ int main() {
     kernel<<<blocksDim, threadsPerBlock>>>(gpu_vct, cols * rows);
     cudaDeviceSynchronize(); // wait for gpu
 
-#if 0
-    PGM<pixel_t> img{cols, rows};
+    PNM<pixel_t> img{cols, rows};
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
-    img.write_file_content<pnm::Format::PGM2>("test.ppm2");
-    img.write_file_content<pnm::Format::PGM5>("test.ppm5");
-#else
-    PPM<pixel_t> img{cols, rows};
-    cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
-    //img.write_file_content<pnm::Format::PPM3>("test.ppm3");
-    img.write_file_content<pnm::Format::PPM6>("test.ppm6");
-#endif
+    img.write_ascii("test-ascii.pnm");
+    img.write_binary("test-bin.pnm");
 
     cudaFree(gpu_vct);
     cudaDeviceReset();

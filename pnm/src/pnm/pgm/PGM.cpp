@@ -9,8 +9,7 @@
 #include <memory>
 #include <new>
 
-template <>
-const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_file_content_pnm2(const char *const file_name) const {
+const PNM<pnm::grayscale<pnm::BIT_8>> & PNM<pnm::grayscale<pnm::BIT_8>>::write_ascii(const char *const file_name) const {
 
     if (!m_length) return *this;
 
@@ -33,8 +32,7 @@ const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_f
     return ::write_file_content(file_name, header, beg, end), *this;
 }
 
-template <>
-const PGM<pnm::grayscale<pnm::BIT_8>> & PGM<pnm::grayscale<pnm::BIT_8>>::write_file_content_pnm5(const char *const file_name) const {
+const PNM<pnm::grayscale<pnm::BIT_8>> & PNM<pnm::grayscale<pnm::BIT_8>>::write_binary(const char *const file_name) const {
 
     if (!m_length) return *this;
 

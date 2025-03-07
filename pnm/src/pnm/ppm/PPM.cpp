@@ -10,8 +10,7 @@
 #include <memory>
 #include <new>
 
-template <>
-const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_pnm3(const char *const file_name) const {
+const PNM<pnm::rgb<pnm::BIT_8>> & PNM<pnm::rgb<pnm::BIT_8>>::write_ascii(const char *const file_name) const {
 
     if (!m_length) return *this;
 
@@ -38,8 +37,7 @@ const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_
     return ::write_file_content(file_name, header, beg, p), *this;
 }
 
-template <>
-const PPM<pnm::rgb<pnm::BIT_8>> & PPM<pnm::rgb<pnm::BIT_8>>::write_file_content_pnm6(const char *const file_name) const {
+const PNM<pnm::rgb<pnm::BIT_8>> & PNM<pnm::rgb<pnm::BIT_8>>::write_binary(const char *const file_name) const {
 
     if (!m_length) return *this;
 
