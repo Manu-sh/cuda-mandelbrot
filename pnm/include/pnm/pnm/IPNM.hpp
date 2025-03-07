@@ -9,6 +9,9 @@ struct IPNM {
     virtual uint16_t height() const noexcept = 0;
     virtual uint16_t  width() const noexcept = 0;
 
+    virtual uint32_t length() const noexcept = 0;
+    virtual uint64_t bsize()  const noexcept = 0;
+
     virtual void  operator()(uint16_t r, uint16_t c, Pixel value) = 0;
     virtual Pixel operator()(uint16_t r, uint16_t c) const = 0;
 

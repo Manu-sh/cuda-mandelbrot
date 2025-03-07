@@ -39,6 +39,9 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
             this->m_byte_length = this->m_byte_width = this->m_byte_height = 0;
         }
 
+        FORCED(inline) uint32_t length() const noexcept { return m_byte_length; }
+        FORCED(inline) uint64_t  bsize() const noexcept { return sizeof(BitArray8) * m_byte_length; } // internal buffer size in bytes
+
         bool operator()(uint16_t r, uint16_t c) const {
 
             const uint32_t byte_idx = r * m_byte_width + (c >> 3); //  r * m_byte_width + (c/8)

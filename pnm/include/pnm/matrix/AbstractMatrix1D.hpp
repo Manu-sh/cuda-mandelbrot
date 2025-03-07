@@ -28,8 +28,9 @@ struct AbstractMatrix1D {
         FORCED(inline) T * unwrap() noexcept { return m_vct; }
         FORCED(inline) uint16_t height() const noexcept { return m_height; }
         FORCED(inline) uint16_t  width() const noexcept { return m_width;  }
+
         FORCED(inline) uint32_t length() const noexcept { return m_length; }
-        FORCED(inline) uint64_t  bsize() const noexcept { return sizeof(T) * m_length; }
+        FORCED(inline) uint64_t  bsize() const noexcept { return sizeof(T) * m_length; } // internal buffer size in bytes
 
         FORCED(inline) T & operator()(uint16_t r, uint16_t c) noexcept { return m_vct[r * m_width + c]; }
         FORCED(inline) const T & operator()(uint16_t r, uint16_t c) const noexcept { return m_vct[r * m_width + c]; }

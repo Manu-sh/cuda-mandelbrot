@@ -27,6 +27,9 @@ struct PNM<pnm::monochrome_t>: public IPNM<pnm::monochrome_t>, private BitMatrix
 
     uint16_t height() const noexcept override { return BitMatrix1D::height(); }
     uint16_t width()  const noexcept override { return BitMatrix1D::width(); }
+    uint32_t length() const noexcept override { return BitMatrix1D::length(); }
+    uint64_t bsize()  const noexcept override { return BitMatrix1D::bsize(); }
+
     BitArray8 * unwrap() noexcept { return BitMatrix1D::unwrap(); }
     const BitArray8 * unwrap() const noexcept { return BitMatrix1D::unwrap(); }
 
