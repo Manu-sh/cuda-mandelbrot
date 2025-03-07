@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <pnm/common.hpp>
+#include <pnm/matrix/IMatrix.hpp>
 
 template <typename T>
 struct AbstractMatrix1D {
@@ -24,7 +25,7 @@ struct AbstractMatrix1D {
             : m_length{(uint32_t)width*height}, m_width{width}, m_height{height} { }
 
     public:
-        FORCED(inline) T * unwrap()  noexcept { return m_vct; }
+        FORCED(inline) T * unwrap() noexcept { return m_vct; }
         FORCED(inline) uint16_t height() const noexcept { return m_height; }
         FORCED(inline) uint16_t  width() const noexcept { return m_width;  }
         FORCED(inline) uint32_t length() const noexcept { return m_length; }
@@ -41,7 +42,7 @@ struct AbstractMatrix1D {
                 return (const T &)self->at(r, c);
         }
 
-        FORCED(inline) const T * unwrap() const {
+        FORCED(inline) const T * unwrap() const noexcept {
             AbstractMatrix1D<T> *const self = (AbstractMatrix1D<T>*)this; // avoid infinite recursion
             return (const T *)self->unwrap();
         }

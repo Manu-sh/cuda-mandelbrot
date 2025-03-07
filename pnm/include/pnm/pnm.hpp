@@ -57,6 +57,7 @@ namespace pnm {
         }
 
         inline constexpr monochrome_t(const rgb<BIT_8> &px): monochrome_t{px.r, px.g, px.b} {}
+        explicit monochrome_t(bool px) { this->data = px; }
     };
 
     static_assert(sizeof(monochrome_t) == 1, "monochrome_t must be exactly 1 byte");

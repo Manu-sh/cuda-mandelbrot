@@ -2,13 +2,17 @@
 #include <type_traits>
 
 #include <pnm/pnm.hpp>
+#include <pnm/pnm/IPNM.hpp>
+
 #include <pnm/common.hpp>
 #include <pnm/matrix/StandardMatrix1D.hpp>
 
 // https://en.wikipedia.org/wiki/Netpbm
 
 template <>
-struct PNM<pnm::rgb<pnm::BIT_8>>: public StandardMatrix1D<pnm::rgb<pnm::BIT_8>> {
+struct PNM<pnm::rgb<pnm::BIT_8>>:
+        public IPNM<pnm::rgb<pnm::BIT_8>>,
+        public StandardMatrix1D<pnm::rgb<pnm::BIT_8>> {
 
     using RGB = pnm::rgb<pnm::BIT_8>;
     using StandardMatrix1D<RGB>::StandardMatrix1D;
@@ -17,4 +21,9 @@ struct PNM<pnm::rgb<pnm::BIT_8>>: public StandardMatrix1D<pnm::rgb<pnm::BIT_8>> 
 
     const PNM & write_ascii(const char *const file_name) const;
     const PNM & write_binary(const char *const file_name) const;
+
+    uint16_t height() const noexcept override { return StandardMatrix1D::height(); }
+    uint16_t width()  const noexcept override { return StandardMatrix1D::width(); }
+    void operator()(uint16_t r, uint16_t c, RGB px) override { StandardMatrix1D::operator()(r, c) = px; }
+    RGB operator()(uint16_t r, uint16_t c) const override { return StandardMatrix1D::operator()(r, c); }
 };
