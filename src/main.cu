@@ -90,8 +90,9 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
 using namespace std;
 int main() {
 
-    //using pixel_t = pnm::grayscale<pnm::BIT_8>;
-    using pixel_t = pnm::rgb<pnm::BIT_8>;
+    using pixel_t = pnm::grayscale<pnm::BIT_8>;
+    //using pixel_t = pnm::rgb<pnm::BIT_8>;
+    //using pixel_t = pnm::monochrome_t;
     cudaSetDevice(0);
 
     pixel_t *gpu_vct;
@@ -113,6 +114,16 @@ int main() {
     cudaMemcpy(img.unwrap(), gpu_vct, sizeof(pixel_t) * img.width() * img.height(), cudaMemcpyDeviceToHost);
     img.write_ascii("test-ascii.pnm");
     img.write_binary("test-bin.pnm");
+
+    PNM<pnm::monochrome_t> x{1920, 1080};
+    bool color = pnm::monochrome_t::BLACK;
+
+    for (int h = 0; h < x.height(); ++h, color = !color)
+        for (int w = 0; w < x.width(); ++w, color = !color)
+            x(h, w, color);
+
+    x.write_ascii("color.pbm1");
+    x.write_binary("color.pbm4");
 
     cudaFree(gpu_vct);
     cudaDeviceReset();

@@ -64,7 +64,7 @@ const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *c
     if (false) {
         fast_cpy:
         const BitArray8 *bit = this->m_vct;
-        for (uint32_t i = 0; i < m_byte_length; ++i) {
+        for (uint32_t i = 0; i < m_byte_length; ++i, ++bit) {
             *p++ = (bit[0][0] + '0'), *p++ = ' ';
             *p++ = (bit[0][1] + '0'), *p++ = ' ';
             *p++ = (bit[0][2] + '0'), *p++ = ' ';

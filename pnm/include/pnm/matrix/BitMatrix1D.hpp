@@ -9,7 +9,6 @@
 #include <pnm/matrix/AbstractMatrix1D.hpp>
 #include <pnm/matrix/BitArray8.hpp>
 
-template <typename Allocator = std::allocator<BitArray8>>
 class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
 
     // same of (int)ceil(x/8.)
@@ -18,7 +17,7 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
     }
 
     public:
-        using allocator_type  = Allocator;
+        using allocator_type  = std::allocator<BitArray8>;
         using allocator_trait = std::allocator_traits<allocator_type>;
 
     public:

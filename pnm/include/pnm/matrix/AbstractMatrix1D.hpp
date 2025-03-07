@@ -21,7 +21,7 @@ struct AbstractMatrix1D {
     protected:
         AbstractMatrix1D() = default;
         explicit AbstractMatrix1D(uint16_t width, uint16_t height)
-            : m_length{(uint32_t)width*height}, m_height{height}, m_width{width} { }
+            : m_length{(uint32_t)width*height}, m_width{width}, m_height{height} { }
 
     public:
         FORCED(inline) T * unwrap()  noexcept { return m_vct; }

@@ -2,7 +2,6 @@
 #include <type_traits>
 
 #include <pnm/pnm.hpp>
-
 #include <pnm/common.hpp>
 #include <pnm/matrix/StandardMatrix1D.hpp>
 

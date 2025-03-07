@@ -10,14 +10,19 @@
 //  IPNM<pnm::monochrome_t>
 
 template <>
-struct PNM<pnm::monochrome_t>: BitMatrix1D<> {
+struct PNM<pnm::monochrome_t>: private BitMatrix1D {
 
-    using BitMatrix1D<>::BitMatrix1D;
-    using BitMatrix1D<>::operator();
+    using BitMatrix1D::BitMatrix1D;
+    using BitMatrix1D::operator();
 
-    void operator()(uint16_t r, uint16_t c, const pnm::monochrome_t px) {
+    void operator()(uint16_t r, uint16_t c, pnm::monochrome_t px) {
         BitMatrix1D::operator()(r, c, px.data);
     }
+
+    uint16_t height() const noexcept { return BitMatrix1D::height(); }
+    uint16_t width()  const noexcept { return BitMatrix1D::width(); }
+    BitArray8 * unwrap() noexcept { return BitMatrix1D::unwrap(); }
+    const BitArray8 * unwrap() const noexcept { return BitMatrix1D::unwrap(); }
 
     const PNM & write_ascii(const char *const file_name) const;
     const PNM & write_binary(const char *const file_name) const;
