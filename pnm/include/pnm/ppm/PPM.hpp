@@ -11,8 +11,8 @@
 
 template <>
 struct PNM<pnm::rgb<pnm::BIT_8>>:
-        public IPNM<pnm::rgb<pnm::BIT_8>>,
-        public StandardMatrix1D<pnm::rgb<pnm::BIT_8>> {
+        IPNM<pnm::rgb<pnm::BIT_8>>,
+        StandardMatrix1D<pnm::rgb<pnm::BIT_8>> {
 
     using RGB = pnm::rgb<pnm::BIT_8>;
     using StandardMatrix1D<RGB>::StandardMatrix1D;

@@ -17,7 +17,6 @@ struct PNM<pnm::grayscale<pnm::BIT_8>>:
 
     static_assert(sizeof(GrayScale{}.data) == 1, "only 8 bit depth is supported, the size of each channel MUST be exactly 1 byte");
 
-
     uint16_t height() const noexcept override { return StandardMatrix1D::height(); }
     uint16_t width()  const noexcept override { return StandardMatrix1D::width(); }
     uint32_t length() const noexcept override { return StandardMatrix1D::length(); }

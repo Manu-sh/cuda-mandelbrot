@@ -11,7 +11,9 @@
 //  IPNM<pnm::monochrome_t>
 
 template <>
-struct PNM<pnm::monochrome_t>: public IPNM<pnm::monochrome_t>, private BitMatrix1D {
+struct PNM<pnm::monochrome_t>:
+        IPNM<pnm::monochrome_t>,
+        private BitMatrix1D {
 
     using BitMatrix1D::BitMatrix1D;
     using BitMatrix1D::operator();
