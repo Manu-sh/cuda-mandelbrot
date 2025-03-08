@@ -4,9 +4,15 @@
 #include <string>
 #include <cstdint>
 
-#include <pnm/pnm.hpp>
+#include <pnm/pixels/depth.hpp>
 
 namespace pnm {
+
+    enum class Format: uint8_t {
+        PPM3, PPM6,
+        PGM2, PGM5,
+        PBM4, PBM1
+    };
 
     // ChannelDepth<BIT_8>::max_value() -> ChannelDepth<8>::max_value()
     template <const uint8_t T> struct ChannelDepth;

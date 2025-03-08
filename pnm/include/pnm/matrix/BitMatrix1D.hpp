@@ -29,7 +29,7 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
             this->m_byte_height = height;
 
             this->m_byte_width  = ceil_div(width, 8);
-            this->m_byte_length = m_byte_width * height; // padded_rows * height
+            this->m_byte_length = m_byte_width * m_byte_height; // padded_rows * height
             this->m_vct = (BitArray8 *)allocator_trait::allocate(m_allocator, this->m_byte_length);
         }
 
@@ -39,6 +39,7 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
             this->m_byte_length = this->m_byte_width = this->m_byte_height = 0;
         }
 
+        // ""Override"" some methods
         FORCED(inline) uint32_t length() const noexcept { return m_byte_length; }
         FORCED(inline) uint64_t  bsize() const noexcept { return sizeof(BitArray8) * m_byte_length; } // internal buffer size in bytes
 
