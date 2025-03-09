@@ -88,8 +88,7 @@ const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *c
 
 const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_binary(const char *const file_name) const {
 
-    if (!m_length)
-        return *this;
+    if (!m_length) return *this;
 
     const uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);
     const uint8_t *const end = ((uint8_t*)(void *)(this->m_vct + this->m_length)); static_assert(sizeof(*m_vct) == 1, "m_vct elements must be 1 byte");

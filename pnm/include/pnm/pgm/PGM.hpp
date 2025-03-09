@@ -21,8 +21,8 @@ struct PNM<pnm::grayscale<pnm::BIT_8>>: private StandardMatrix1D<pnm::grayscale<
     uint32_t length() const noexcept { return StandardMatrix1D::length(); }
     uint64_t  bsize() const noexcept { return StandardMatrix1D::bsize();  }
 
-          GrayScale * unwrap()       noexcept { return StandardMatrix1D::unwrap(); }
     const GrayScale * unwrap() const noexcept { return StandardMatrix1D::unwrap(); }
+          GrayScale * unwrap()       noexcept { return StandardMatrix1D::unwrap(); }
 
     const GrayScale & operator()(uint16_t r, uint16_t c) const noexcept { return StandardMatrix1D::operator()(r, c); }
           GrayScale & operator()(uint16_t r, uint16_t c)       noexcept { return StandardMatrix1D::operator()(r, c); }

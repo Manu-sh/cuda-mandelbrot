@@ -19,8 +19,8 @@ struct PNM<pnm::monochrome_t>: private BitMatrix1D {
     uint32_t length() const noexcept { return BitMatrix1D::length(); }
     uint64_t  bsize() const noexcept { return BitMatrix1D::bsize();  }
 
-          BitArray8 * unwrap()       noexcept { return BitMatrix1D::unwrap(); }
     const BitArray8 * unwrap() const noexcept { return BitMatrix1D::unwrap(); }
+          BitArray8 * unwrap()       noexcept { return BitMatrix1D::unwrap(); }
 
     bool operator()(uint16_t r, uint16_t c) const {
         return BitMatrix1D::operator()(r, c);
