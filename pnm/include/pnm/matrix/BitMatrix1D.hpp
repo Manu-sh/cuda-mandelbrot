@@ -22,31 +22,25 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
 
     public:
         BitMatrix1D(uint16_t width, uint16_t height): AbstractMatrix1D<BitArray8>{width, height} {
-            this->m_length = 0; // m_length shall not used
 
             // "Each row is Width bits, packed 8 to a byte": https://netpbm.sourceforge.net/doc/pbm.html
             // that means a matrix w=1 h=1080 require 1080 bytes whereas one with w=1920 h=1 just 240 bytes
             this->m_byte_height = height;
-
             this->m_byte_width  = ceil_div(width, 8);
-            this->m_byte_length = m_byte_width * m_byte_height; // padded_rows * height
-            this->m_vct = (BitArray8 *)allocator_trait::allocate(m_allocator, this->m_byte_length);
+            this->m_length = m_byte_width * m_byte_height; // padded_rows * height
+            this->m_vct = (BitArray8 *)allocator_trait::allocate(m_allocator, this->m_length);
         }
 
         ~BitMatrix1D() {
             allocator_trait::deallocate(m_allocator, this->m_vct, this->m_length);
             this->m_vct = (BitArray8 *)(long)(this->m_length = this->m_width = this->m_height = 0);
-            this->m_byte_length = this->m_byte_width = this->m_byte_height = 0;
+            this->m_byte_width = this->m_byte_height = 0;
         }
-
-        // ""Override"" some methods
-        FORCED(inline) uint32_t length() const noexcept { return m_byte_length; }
-        FORCED(inline) uint64_t  bsize() const noexcept { return sizeof(BitArray8) * m_byte_length; } // internal buffer size in bytes
 
         bool operator()(uint16_t r, uint16_t c) const {
 
             const uint32_t byte_idx = r * m_byte_width + (c >> 3); //  r * m_byte_width + (c/8)
-            if (byte_idx >= m_byte_length || r >= m_height || c >= m_width)
+            if (byte_idx >= m_length || r >= m_height || c >= m_width)
                 throw std::runtime_error("index out of bound");
 
             const BitArray8 &bit_a = m_vct[byte_idx];
@@ -56,7 +50,7 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
         void operator()(uint16_t r, uint16_t c, bool value) {
 
             const uint32_t byte_idx = r * m_byte_width + (c >> 3);
-            if (byte_idx >= m_byte_length || r >= m_height || c >= m_width)
+            if (byte_idx >= m_length || r >= m_height || c >= m_width)
                 throw std::runtime_error("index out of bound");
 
             BitArray8 &bit_a = m_vct[byte_idx];
@@ -65,7 +59,6 @@ class BitMatrix1D: public AbstractMatrix1D<BitArray8> {
 
     protected:
         allocator_type m_allocator;
-        uint32_t m_byte_length;
         uint16_t m_byte_height;
         uint16_t m_byte_width;
 };

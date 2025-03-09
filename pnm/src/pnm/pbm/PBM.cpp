@@ -15,7 +15,7 @@ const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *c
 
     static_assert(sizeof(BitArray8) == 1, "ooops");
 
-    if (!(m_width && m_height))
+    if (!m_length)
         return *this;
 
     // 2 -> strlen("0 ") + 1 for the null terminator we actually dont use
@@ -30,7 +30,7 @@ const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *c
     if (!remaind_width)
         goto fast_cpy;
 
-    for (uint32_t i = 0, w_byte = 0; i < m_byte_length; i += m_byte_width) {
+    for (uint32_t i = 0, w_byte = 0; i < m_length; i += m_byte_width) {
 
         const BitArray8 *pr = this->m_vct + i;
 
@@ -50,7 +50,7 @@ const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *c
 
         // if it's 8 multiple there is no padding and this point shouldn't be reached
         assert(remaind_width);
-        assert(pr < m_vct+m_byte_length);
+        assert(pr < m_vct+m_length);
 
         // read remaining bits and stop before padding
         const BitArray8 bit = *pr;
@@ -64,7 +64,7 @@ const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *c
     if (false) {
         fast_cpy:
         const BitArray8 *bit = this->m_vct;
-        for (uint32_t i = 0; i < m_byte_length; ++i, ++bit) {
+        for (uint32_t i = 0; i < m_length; ++i, ++bit) {
             *p++ = (bit[0][0] + '0'), *p++ = ' ';
             *p++ = (bit[0][1] + '0'), *p++ = ' ';
             *p++ = (bit[0][2] + '0'), *p++ = ' ';
@@ -88,13 +88,12 @@ const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_ascii(const char *c
 
 const PNM<pnm::monochrome_t> & PNM<pnm::monochrome_t>::write_binary(const char *const file_name) const {
 
-    if (!(m_width && m_height))
+    if (!m_length)
         return *this;
 
-    // last iteration has move the pointer by sizeof(rgb3_t) -> 3 bytes, which is okay because both are big at least a multiple of 3 bytes
     const uint8_t *const beg = ((uint8_t*)(void *)this->m_vct);
-    const uint8_t *const end = ((uint8_t*)(void *)(this->m_vct + this->m_byte_length)); static_assert(sizeof(*m_vct) == 1, "m_vct elements must be 1 byte");
-    assert((size_t)std::distance(beg, end) <= this->m_byte_length);
+    const uint8_t *const end = ((uint8_t*)(void *)(this->m_vct + this->m_length)); static_assert(sizeof(*m_vct) == 1, "m_vct elements must be 1 byte");
+    assert((size_t)std::distance(beg, end) <= this->m_length);
 
     auto header = pnm::Header<pnm::Format::PBM4, pnm::BIT_2>{m_width, m_height};
     return ::write_file_content(file_name, header, beg, end), *this;
