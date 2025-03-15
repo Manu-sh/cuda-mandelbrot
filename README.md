@@ -17,7 +17,7 @@ is [your cuda architecture](https://developer.nvidia.com/cuda-gpus).
 | GTX 10xx (Pascal)  | 61, 62            |
 | GTX 900 (Maxwell)  | 50, 52            |
 
-otherwise you can use `nvcc -ls-arch` to get a detailed list of 
+otherwise you can use `nvcc -ls-arch` to get a detailed list 
 
 
 ```bash
