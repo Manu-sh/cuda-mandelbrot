@@ -67,7 +67,6 @@ __device__ Pixel calc_mandelbrot(uint16_t ix, uint16_t iy) {
     //const uint8_t col = min(255, max(0, (unsigned)(z.real() * 255))); // -> different result
     //const uint8_t col = (uint8_t)lround(z.real() * 1);                // ok
     const uint8_t col = (uint8_t)__float2int_rn(z.real() * 1);          // same of calling std::lround(float) but cuda specific
-    //return (i == max_i) ? Pixel{0,0,0} : Pixel{col,col,col};
     return (i == max_i) ? Pixel{0,0,0} : random_primary<Pixel>(col);
 }
 
