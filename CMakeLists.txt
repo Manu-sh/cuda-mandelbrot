@@ -30,7 +30,7 @@ endif()
 
 set(INC_PATH  ${PROJECT_SOURCE_DIR}/include)
 set(SRC_PATH  ${PROJECT_SOURCE_DIR}/src)
-set(LIB_PATH  ${PROJECT_SOURCE_DIR}/pnm/lib)
+#set(LIB_PATH  ${PROJECT_SOURCE_DIR}/pnm/lib)
 
 add_executable(${PROJECT_NAME} ${SRC_PATH}/main.cu)
 
@@ -39,8 +39,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 # add & link pnm
-add_subdirectory(pnm)
+include(FetchContent)
+FetchContent_Declare(pnm GIT_REPOSITORY https://github.com/Manu-sh/pnm.git GIT_TAG dc77ee3c1e0c075a334d7834eb7ba9c17c4dddbf)
+FetchContent_MakeAvailable(pnm)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE pnm)
+
 
 target_compile_options(${PROJECT_NAME} PRIVATE
         -g

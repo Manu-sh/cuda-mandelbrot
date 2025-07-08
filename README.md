@@ -35,68 +35,13 @@ feh test.ppm
 
 Learning resources
 
-- https://en.wikipedia.org/wiki/Netpbm
 - https://developer.nvidia.com/blog/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
 - https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#thread-hierarchy
 - https://codingbyexample.com/2018/12/17/cuda-threads-memory/
 - https://www.youtube.com/playlist?list=PLC6u37oFvF40BAm7gwVP7uDdzmW83yHPe
 - https://cuda-tutorial.readthedocs.io/en/latest/
 - https://tschmidt23.github.io/cse599i/CSE%20599%20I%20Accelerated%20Computing%20-%20Programming%20GPUs%20Lecture%2017.pdf
-- https://netpbm.sourceforge.net/doc/pbm.html
-- https://en.wikipedia.org/wiki/Netpbm
 
-```cpp
-PNM<pnm::monochrome_t> chessboard{1920, 1080};
-bool color = pnm::monochrome_t::BLACK;
-
-for (int h = 0; h < chessboard.height(); ++h, color = !color)
-    for (int w = 0; w < chessboard.width(); ++w, color = !color)
-        chessboard(h, w, color);
-
-chessboard.write_file_content("chessboard-bin.pbm");
-chessboard.write_file_content("chessboard-ascii.pbm", 1);
-
-PNM<pnm::monochrome_t> pbm{3, 2};
-
-pbm(0,0, {255, 0,   0}); // since bits aren't addressable you will use a different syntax
-pbm(0,1, {0,   255, 0});
-pbm(0,2, {0,   255, 0});
-
-pbm(1,0, {255, 255, 0});
-pbm(1,1, {255, 255, 255});
-pbm(1,2, {0,   0,   0});
-
-pbm.write_file_content("bin.pbm");
-pbm.write_file_content("ascii.pbm", 1);
-
-PNM<pnm::rgb<pnm::BIT_8>> ppm{3, 2};
-
-ppm(0,0) = {255, 0,   0};
-ppm(0,1) = {0,   255, 0};
-ppm(0,2) = {0,   0,   255};
-
-ppm(1,0) = {255, 255, 0};
-ppm(1,1) = {255, 255, 255};
-ppm(1,2) = {0,   0,   0};
-
-
-ppm.write_file_content("bin.ppm");
-ppm.write_file_content("ascii.ppm", 1);
-
-PNM<pnm::grayscale<pnm::BIT_8>> pgm{3, 2};
-
-pgm(0,0) = {255, 0,   0};
-pgm(0,1) = {0,   255, 0};
-pgm(0,2) = {0,   0,   255};
-
-pgm(1,0) = {255, 255, 0};
-pgm(1,1) = {255, 255, 255};
-pgm(1,2) = {0,   0,   0};
-
-pgm.write_file_content("bin.pgm");
-pgm.write_file_content("ascii.pgm", 1);
-
-```
 
 profiling, nvprof is a sort of compatibility layer to use old nvprof syntax, 
 but most of nvprof flags are simply ignored by nsys
