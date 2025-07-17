@@ -43,7 +43,7 @@ include(FetchContent)
 FetchContent_Declare(opnm GIT_REPOSITORY https://github.com/Manu-sh/opnm.git GIT_TAG 41322ddef0feb4f7edec96c0adb86840723914bb)
 FetchContent_MakeAvailable(opnm)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE pnm)
+target_link_libraries(${PROJECT_NAME} PRIVATE opnm)
 
 
 target_compile_options(${PROJECT_NAME} PRIVATE
