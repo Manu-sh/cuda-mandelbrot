@@ -72,9 +72,12 @@ __device__ Pixel calc_mandelbrot(uint16_t ix, uint16_t iy) {
 template<typename Pixel>
 __global__ void kernel(Pixel *const v, uint32_t len) {
 
+    // https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#thread-hierarchy
     uint16_t tr = blockIdx.y * blockDim.y + threadIdx.y;
     const uint16_t tc = blockIdx.x * blockDim.x + threadIdx.x;
 
+    // https://nanxiao.gitbooks.io/cuda-little-book/content/posts/grid-stride-loops.html
+    // https://stackoverflow.com/questions/22593936/cuda-grid-stride-loops-over-2d-arrays#22607308
     #pragma unroll
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
         #pragma unroll
