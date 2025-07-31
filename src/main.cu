@@ -79,6 +79,7 @@ __global__ void kernel(Pixel *const v, uint32_t len) {
     // https://nanxiao.gitbooks.io/cuda-little-book/content/posts/grid-stride-loops.html
     // https://stackoverflow.com/questions/22593936/cuda-grid-stride-loops-over-2d-arrays#22607308
     // https://developer.nvidia.com/blog/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
+    // https://cuda-tutorial.readthedocs.io/en/latest/tutorials/tutorial02/#exercise-1-parallelizing-vector-addition-using-multithread
     #pragma unroll
     for (; tr < gpu_rows; tr += blockDim.y * gridDim.y) {
         #pragma unroll
