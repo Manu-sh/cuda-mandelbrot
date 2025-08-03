@@ -40,7 +40,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 # add & link opnm
 include(FetchContent)
-FetchContent_Declare(opnm GIT_REPOSITORY https://github.com/Manu-sh/opnm.git GIT_TAG d940d52dbdeac821b9b23be050cad768ef7913b6)
+FetchContent_Declare(opnm GIT_REPOSITORY https://github.com/Manu-sh/opnm.git GIT_TAG dc41bffeb0e20636201037e830bd807c5622cdc2)
 FetchContent_MakeAvailable(opnm)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE opnm)
