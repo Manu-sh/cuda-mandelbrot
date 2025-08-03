@@ -9,7 +9,7 @@
     #error "FORCED() macro already defined"
 #endif
 
-#define FORCED(_UNUSED_) __attribute__((always_inline))
+#define FORCED(_UNUSED_) inline __attribute__((always_inline))
 
 // https://stackoverflow.com/questions/2151084/map-a-2d-array-onto-a-1d-array
 constexpr FORCED(inline) uint32_t AT(uint16_t cols, uint16_t r, uint16_t c) { // cols = width = x_size
